@@ -1,0 +1,34 @@
+This package allows computation of solutions of the meniscus equation
+(static configurations of drops, bubbles, bridges, etc...)
+through continuation method
+
+a meniscus is defined by the four variables :
+[R,Z,P,V] 
+R and Z are arrays containing the points along the contour
+P and V are respectively the nondimensional pressure (at Z=0) 
+and the volume of the meniscus. Either can be used as a continuation
+variable.
+
+[R,Z,P,V] should always be used as argument of the function
+in an indisociable way (in future versions this should be reprogramed as a structure)
+ 
+To start :
+1/ build a "guess" for (R,Z,P,V)
+2/ find the closest equilibrium solution by imposing either P and V with 
+Newton_P or Newton_V
+3/ use the loops
+4/ have fun...
+
+NOTE ON THE GLOBAL VARIABLES
+RR          radius (for pinned drops & bridges)
+dpdz        nondimensional pressure gradient ( = rho g / gamma ) 
+Weta        relaxation factor for newton, normal deformation (should be one in principle) 
+Wxi         same for tangential stretching 
+verbosity   0 for debugging 
+beta 
+discretization 
+nbdim 
+Vref;
+
+
+

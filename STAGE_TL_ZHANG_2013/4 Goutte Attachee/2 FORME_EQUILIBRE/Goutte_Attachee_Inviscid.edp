@@ -1,0 +1,225 @@
+real T=1.0; //tension de surface
+real R=1.0;
+mesh Th = readmesh("MeshBulle.msh");
+plot(Th,wait=1);
+
+fespace Xh(Th,P2);
+fespace Mh(Th,P1);
+fespace XhxMhxMh(Th,[P2,P1,P1]);
+Xh<complex> [phi];
+Mh<complex> [p];
+Mh<complex> [eta];
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+mesh Thempty=emptymesh(Th);   //plot(Thempty,wait=1);
+fespace Wh1(Thempty,P1);
+Wh1 N0r,N0z,T0r,T0z,K0a,K0b,test;
+
+problem CalcN0r(N0r,test)=
+  int1d(Thempty,qfe=qf3pE)(N0r*test)-int1d(Thempty,qfe=qf3pE)(N.x*test);
+problem CalcN0z(N0z,test)=
+  int1d(Thempty,qfe=qf3pE)(N0z*test)-int1d(Thempty,qfe=qf3pE)(N.y*test);
+
+CalcN0r;
+CalcN0z;
+T0r = N0z;
+T0z = -N0r;
+
+macro Ds(u1,u2)
+[dx(u1)*T0r+dy(u1)*T0z,dx(u2)*T0r+dy(u2)*T0z]
+// EOM
+
+
+problem ComputeK0a(K0a,test)=
+  int1d(Thempty,qfe=qf3pE)(K0a*test)
+ -int1d(Thempty,qfe=qf3pE)(Ds(N0r,N0z)'*[T0r,T0z]*test);
+ComputeK0a;
+
+problem ComputeK0b(K0b,test)=
+  int1d(Thempty,qfe=qf3pE)(K0b*test)
+ -int1d(Thempty,qfe=qf3pE)(N0r*test/x);
+ //+int2d(Thempty)(K0b*test*1e-30);
+ComputeK0b;
+
+//K0b = N0r/(x+1e-10); marche pas
+
+
+// Prolongement de la courbure dans le plan (pour la visualisation uniquement)
+Mh K0ext,dK0ext;
+problem ExtendC(K0ext,dK0ext)=
+    int2d(Th)((dx(K0ext)*dx(dK0ext)+dy(K0ext)*dy(dK0ext)))
++on(2,K0ext=(K0b+K0a));
+ExtendC;
+plot(K0ext,fill=1,value=1);
+
+
+//plot(K0a,wait=1);
+//plot(K0b,wait=1);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// il faut definir un parametre drhogS = (delta rho) g / sigma 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+varf a([phi,p,eta],[v,q,h]) =
+//LAPLACIEN
+int2d(Th)(dx(phi)*dx(v)*abs(x)+dy(phi)*dy(v)*abs(x))
+//TERME DE PRESSION
+- int2d(Th)(p*q*abs(x))
+//TERME DE COURBURE
+- int1d(Th,2)(p*h*abs(x))
+//TENSION DE SURFACE
+- int1d(Th,2)( T/R^2*( K0a*K0a + K0b*K0b )*eta*h*abs(x))
++ int1d(Th,2)( T*(dx(eta)*N.y-dy(eta)*N.x)*(dx(h)*N.y-dy(h)*N.x)*abs(x) )
+// + int1d(Th,3)(T*drhogS*eta*N0z*h*x
+
+
+- int1d(Th,2)(T*eta*N.y*h*abs(x))
+
+
+//TERMES DE PENALISATION
+  + int2d(Th)( phi*v*1e-7 )
+//+ int2d(Th)( p*q*1e-7   )
+  + int2d(Th)( eta*h*1e-7  );
+ // + on(6,eta=0);
+
+varf b([phi,p,eta],[v,q,h]) = int2d(Th)(phi*q*abs(x)) + int1d(Th,2)(eta*v*abs(x)) ;//+ int2d(Th)(p*h*x*(1e-7));
+
+matrix<complex> A = a(XhxMhxMh,XhxMhxMh,tgv=1e30);
+matrix<complex> B = b(XhxMhxMh,XhxMhxMh,tgv=1e30);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+
+POUR RESOUDRE LE PROBLEME FORCE : ( A VERIFIER )
+
+// attention : il faut définir les inconnues en COMPLEXE
+
+XhxMhxMh<complex> [phi,p,eta],[v,q,h];
+
+
+real omega = 1.; // a faire varier ensuite)
+real U = 1;
+
+problem RegimeForce([phi,p,eta],[v,q,h]) =
+//LAPLACIEN
+int2d(Th)(dx(phi)*dx(v)*abs(x)+dy(phi)*dy(v)*abs(x))    
+//TERME DE PRESSION
+- int2d(Th)(p*q*abs(x))
+//TERME DE COURBURE
+- int1d(Th,2)(p*h*abs(x))
+//TENSION DE SURFACE 
+- int1d(Th,2)( T/R^2*( K0a*K0a + K0b*K0b )*eta*h*abs(x)) 
++ int1d(Th,2)( T*(dx(eta)*N.y-dy(eta)*N.x)*(dx(h)*N.y-dy(h)*N.x)*abs(x) )
+//TERMES DE PENALISATION
++ int2d(Th)( phi*v*1e-7 )
+//+ int2d(Th)( p*q*1e-7   )
+  + int2d(Th)( eta*h*1e-7  )
+
++ int2d(Th)(-i*omega*phi*q*abs(x)) + int1d(Th,2)(-i*omega*eta*v*abs(x))   // termes venant de la matrice B
+
++ int1d(Th,6)(abs(x)*v*U) // terme de forcage (second membre, signe a verifier)
+
++ on(6,eta=0) // car eta n'est defini que sur la surface
+
+RegimeForce; // Resoud le problème => calcule [phi,p,eta]
+
+real EnergieCinetique = int2d(Th)(dx(phi)*conj(dx(phi))*abs(x)+dy(phi)*conj(dy(phi))*abs(x));
+
+// Normalement cette energie doit avoir des pics aux frequences de resonnance.
+
+*/
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////// SLPC /////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	{
+	ofstream file("ffmatA.txt");
+	file.precision(16);
+	file.scientific; 
+	file << A << endl;
+	};
+//////////Construction du format i, j, real(a_ij), imag(a_ij) : matrice A//////////////////////////////////////////////////
+	string ss1;
+	complex aa;
+	ifstream fileA("ffmatA.txt");
+	int Na, Nnz, sy,i,j;
+	int[int] IIA(1),JJA(1); //the arrays IIA, JJA and AIJ are progressively automatically resized from size=1 to size=non-zeros elements of A
+        complex[int] AIJ(1);
+        [IIA,JJA,AIJ] = A;
+	int Ni= IIA.n;
+	int Nmat = A.n;
+
+	{
+	ofstream filet("matA.txt");
+	filet.precision(16);
+	filet.scientific;
+	filet << "# Sparse Matrix (Morse)"<< endl;
+	filet << "# first line: n m (is symmetic) nbcoef" << endl;
+	filet << "# after for each nonzero coefficient:   i j a_ij where (i,j) \in  {1,...,n}x{1,...,m}" << endl;
+
+	fileA >> ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1;
+	//cout << "s = "<< ss1<<endl;
+	fileA >> Na ;
+	fileA >>  Na ;
+	fileA >> sy ;
+	//cout << "issym = "<< sy<<endl;
+	fileA >> Nnz;
+	cout << "Nbcoef = "<< Nnz<<endl;
+	filet << Nmat <<" " << Nmat << " " << sy << " " << Ni << endl;
+        for (int i=0;i<Ni;++i)
+           {filet << IIA(i)+1 << " " << JJA(i)+1 << " " << real(AIJ(i)) << " " <<imag(AIJ(i)) << endl;
+        }
+        
+	};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	{
+	ofstream file("ffmatB.txt");
+	file.precision(16);
+	file.scientific;
+	file << B << endl;
+	};
+/////////////////////Construction du format i, j, real(b_ij), imag(b_ij) : matrice directe///////////////////////////////////////	
+	ifstream fileB("ffmatB.txt");
+	int[int] IIB(1),JJB(1);
+        complex[int] BIJ(1);
+        [IIB,JJB,BIJ] = B;
+        Ni= IIB.n;
+        Nmat = B.n;
+
+	{
+	ofstream filet2("matB.txt");
+	filet2.precision(16);
+        filet2.scientific;
+	filet2 << "# Sparse Matrix (Morse)"<< endl;
+	filet2 << "# first line: n m (is symmetic) nbcoef" << endl;
+	filet2 << "# after for each nonzero coefficient:   i j a_ij where (i,j) \in  {1,...,n}x{1,...,m}" << endl;
+
+	fileB >> ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1;
+	//cout << "s = "<< ss1<<endl;
+	fileB >> Na ;
+	fileB >>  Na ;
+	fileB >> sy ;
+	//cout << "issym = "<< sy<<endl;
+	fileB >> Nnz;
+	cout << "Nbcoef = "<< Nnz<<endl;
+	filet2 << Nmat <<" " << Nmat << " " << sy << " " << Ni << endl;
+        for (int i=0;i<Ni;++i)
+           {filet2 << IIB(i)+1 << " " << JJB(i)+1 << " " <<real(BIJ(i)) << " " <<imag(BIJ(i))  << endl;
+        }
+	};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	cout << "Traduction des fichiers au format PetsC ...." << endl;
+	exec ("./ff2petsc_complex -sr 0.0 -si 0.0 > OUT"); 
+	cout << "Resolution par Slepc ...." << endl;
+	string AA="./eigenpb_complex_jerome  -dir -sr 0.0 -si 0.0 -nval 20 -nvec 20";
+	exec(AA);
+	exec("cat eigenvalues.dat >> EigenValue_n=0.dat");
+	cout << "That's all folks!!!" << endl;
+
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+% Constuction of equilibrium shapes for hanging drops,  
+% with fixed contact angle
+%
+% Script reconstructed on october 2017 to explain the usage of meniscus.m
+%
+% nb here m.rhog=1 and m.gamma=1 so the Bond number is Rhole
+
+
+clear all; close all;
+beta = pi/2;
+Rinit = .4; 
+m = meniscus('sphere',200,[Rinit,beta]); % initialize the meniscus
+resetfigs(m); % set the figures axes and legends
+m = loop(m,'S',.05,100); % first arclenc
+
+m = loop(m,'S',.01,100);
+

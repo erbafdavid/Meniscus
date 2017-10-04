@@ -1,0 +1,235 @@
+		verbosity = 0;
+
+		// Polynome de Legendre en cos(t)
+
+		real[int] PLR(12);
+		include "Legendrecoeff2.txt"
+
+	        func real PL(int n, real t)
+		{
+		  if (n==0)
+		  { 
+		      return 1;
+		  }
+		  else if (n==1)
+		  {
+		      return cos(pi-t);
+		  }
+		}
+
+		func real PL2(real t)
+		{		 
+		    //  return (2.*2-1.)/2*cos(pi-t)*PL(1,t)-(2-1)/2*PL(0,t); 
+			return 1./2*(3*(cos(pi-t))^2-1);
+		}
+		
+		func real PL3(real t)
+		{		 
+		      //return (2.*3-1.)/3*cos(pi-t)*PL2(t)-(3-1)/3*PL(1,t); 
+			return 1./2*(5*(cos(pi-t))^3-3*cos(pi-t));
+		}
+		  func real PL4(real t)
+		{		 
+		      //return (2.*4-1.)/4*cos(pi-t)*PL3(t)-(4-1)/4*PL2(t); 
+			return  1./8*(35*(cos(pi-t))^4-30*(cos(pi-t))^2+3);
+		}
+		  func real PL5(real t)
+		{		 
+		      //return (2.*5-1.)/5*cos(pi-t)*PL4(t)-(5-1)/5*PL3(t); 
+			return  1./8*(63*(cos(pi-t))^5-70*(cos(pi-t))^3+15*cos(pi-t));
+		}
+		  func real PL6(real t)
+		{		 
+		      //return (2.*6-1.)/6*cos(pi-t)*PL5(t)-(6-1)/6*PL4(t); 
+			return  1./16*(231*(cos(pi-t))^6-315*(cos(pi-t))^4+105*(cos(pi-t))^2-5);
+		}
+		 func real PL7(real t)
+		{		 
+		     // return (2.*7-1.)/7*cos(pi-t)*PL6(t)-(7-1)/7*PL5(t); 
+			return  1./16*(429*(cos(pi-t))^7-693*(cos(pi-t))^5+315*(cos(pi-t))^3-35*cos(pi-t));
+		}		
+		 func real PL8(real t)
+		{		 
+		     // return (2.*8-1.)/8*cos(pi-t)*PL7(t)-(8-1)/8*PL6(t); 
+			return  1./128*(6435*(cos(pi-t))^8-12012*(cos(pi-t))^6+6930*(cos(pi-t))^4-1260*(cos(pi-t))^2+35);
+		}
+	        func real PL9(real t)
+		{		 
+		      //return (2.*9-1.)/9*cos(pi-t)*PL8(t)-(9-1)/9*PL7(t); 
+			return  1./128*(12155*(cos(pi-t))^9-25740*(cos(pi-t))^7+18018*(cos(pi-t))^5-4620*(cos(pi-t))^3+315*cos(pi-t));
+		}
+		 func real PL10(real t)
+		{		 
+		     // return (2.*10-1.)/10*cos(pi-t)*PL9(t)-(10-1)/10*PL8(t); 
+			return  1./256*(46189*(cos(pi-t))^10-109395*(cos(pi-t))^8+90090*(cos(pi-t))^6-30030*(cos(pi-t))^4+3465*(cos(pi-t))^2-63);
+		}
+	/*	 func real PL11(real t)
+		{		 
+		      return (2.*11-1.)/11*cos(pi-t)*PL10(t)-(11-1)/11*PL9(t); 
+		}
+		 func real PL12(real t)
+		{		 
+		      return (2.*12-1.)/12*cos(pi-t)*PL11(t)-(12-1)/12*PL10(t); 
+		}
+		func real PL13(real t)
+		{		 
+		      return (2.*13-1.)/13*cos(pi-t)*PL12(t)-(13-1)/13*PL11(t); 
+		}
+	*/
+		real rayon = 0.5; //rayon equivalent = a*chi^(2/3)
+		real redim=1*rayon;
+
+		aa0= aa0*redim;
+		aa1= aa1*redim;
+		aa2= aa2*redim;
+		aa3= aa3*redim;
+		aa4= aa4*redim;
+		aa5= aa5*redim;
+		aa6= aa6*redim;
+		aa7= aa7*redim;
+		aa8= aa8*redim;
+		aa9= aa9*redim;
+		aa10= aa10*redim;
+
+		real chi=2.5;
+		real a = 0.5/chi^(2./3.);  //petit (demi-) axe (horizontal) d'ellipse = (rayon equivalent)/chi^(2/3)
+                real b = a*chi;    //grand (demi-) axe (vertical) d'ellipse
+		real ep1=2*(aa0*PL(0,0)+aa1*PL(1,0)+aa2*PL2(0)+aa3*PL3(0)+aa4*PL4(0)+aa5*PL5(0)
++aa6*PL6(0)+aa7*PL7(0)+aa8*PL8(0)+aa9*PL9(0)+aa10*PL10(0));
+ 		
+		real ep2=2*(aa0*PL(0,pi)+aa1*PL(1,pi)+aa2*PL2(pi)+aa3*PL3(pi)+aa4*PL4(pi)+aa5*PL5(pi)
++aa6*PL6(pi)+aa7*PL7(pi)+aa8*PL8(pi)+aa9*PL9(pi)+aa10*PL10(pi));
+/*
+		real epsilon=1e-16;
+	        real stretch = 1.2;
+		real l1b=3; 
+		real l1=15;//20;
+		real h1b=1.5;
+		real l2=47;//50; 
+		real l2b=5;
+		real h1=20;//20;	
+		real h1bb=3;
+		real l1g = 6;
+		real l2g =45;//50;
+		real l2real = l2b+(l2-l2b)^stretch;
+		real l1real = l1b+(l1-l1b)^stretch;
+		real h1real = h1bb+(h1-h1bb)^stretch;
+		real x0=0.;	 	// centre en x de l'ellipse
+		real y0=0.;		// centre en y de l'ellipse
+		
+*/
+
+		real epsilon=1e-16;
+	        real stretch = 1.2;
+		real l1b=3; 
+		real l1=10;//20;
+		real h1b=1.5;
+		real l2=30;//50; 
+		real l2b=5;
+		real h1=15;//20;	
+		real h1bb=3;
+		real l1g = 6;
+		real l2g =27;//50;
+		real l2real = l2b+(l2-l2b)^stretch;
+		real l1real = l1b+(l1-l1b)^stretch;
+		real h1real = h1bb+(h1-h1bb)^stretch;
+		real x0=0.;	 	// centre en x de l'ellipse
+		real y0=0.;		// centre en y de l'ellipse
+		
+		cout << "test 1 "<< " " << (aa0*PL(0,0)+aa1*PL(1,0)+aa2*PL2(0)+aa3*PL3(0)+aa4*PL4(0)+aa5*PL5(0)
++aa6*PL6(0)+aa7*PL7(0)+aa8*PL8(0)+aa9*PL9(0)+aa10*PL10(0)) << endl;
+		cout << "test 2 "<< " " << (aa0*PL(0,pi)+aa1*PL(1,pi)+aa2*PL2(pi)+aa3*PL3(pi)+aa4*PL4(pi)+aa5*PL5(pi)
++aa6*PL6(pi)+aa7*PL7(pi)+aa8*PL8(pi)+aa9*PL9(pi)+aa10*PL10(pi))<< endl;
+
+		cout << "test 3 "<< " " << (aa0*PL(0,pi/2)+aa1*PL(1,pi/2)+aa2*PL2(pi/2)+aa3*PL3(pi/2)+aa4*PL4(pi/2)+aa5*PL5(pi/2)
++aa6*PL6(pi/2)+aa7*PL7(pi/2)+aa8*PL8(pi/2)+aa9*PL9(pi/2)+aa10*PL10(pi/2)) << endl;
+
+
+
+                border a1(t=-(l1-l1b),0){ x=-l1b-(-t)^stretch; y=0;label=6;};
+			// axe amont lointain entre -l1real et -l1b ; densité m=5 et stretching
+                border a2(t=-l1b,-ep2/2.){ x=t; y=0;label=6;};
+			// axe amont proche -l1b et -ep/2 ; densité o=20
+		//a=0.5;b=0.5;ep=2*a;
+/*		
+(0.9859415*PL(0,t)+0*PL(1,t)-0.2588513*PL2(t)-0.0200535*PL3(t)-0.0559849*PL4(t)+0.0078635*PL5(t)
+-0.0119208*PL6(t)-0.00203140*PL7(t)+0.00241636*PL8(t)+0.00039225*PL9(t)-0.0004806*PL10(t)-0.0000545*PL11(t)+0.00010526*PL12(t))
+*/	
+                border obs1(t=pi,0){x=(aa0*PL(0,t)+aa1*PL(1,t)+aa2*PL2(t)+aa3*PL3(t)+aa4*PL4(t)+aa5*PL5(t)
++aa6*PL6(t)+aa7*PL7(t)+aa8*PL8(t)+aa9*PL9(t)+aa10*PL10(t))*cos(t);
+				    y=(aa0*PL(0,t)+aa1*PL(1,t)+aa2*PL2(t)+aa3*PL3(t)+aa4*PL4(t)+aa5*PL5(t)
++aa6*PL6(t)+aa7*PL7(t)+aa8*PL8(t)+aa9*PL9(t)+aa10*PL10(t))*sin(t);
+				    label=2;};
+		
+		// border obs1(t=pi,0){x=ep/2*cos(t);y=ep/2*sin(t);label=2;};
+
+		border a3(t=ep1/2.,l2b){ x=t; y=0;label=6;};
+			// axe aval proche  entre ep/2 et l2b ; densité o=20;
+                border a4(t=0,l2-l2b){ x=l2b+t^stretch; y=0;label=6;};
+			// axe aval lointain entre l2b et l2real ; densité m=5 avec stretch
+
+		
+		border ba(t=0,h1bb){ x=l2real; y=t; label=3; };
+			// sortie proche axe ; densité l=1 
+                border bb(t=0,h1-h1bb){ x=l2real; y=h1bb+t^stretch; label=3; };
+			// sortie loin axe ; densité l=1 avec stretch
+                border c(t=l2real,-l1real){ x=t; y=h1real;label=4;};
+			// frontiere latérale ; densité l=1
+                
+		border da(t=-(h1-h1bb),0){ x=-l1real; y=h1bb+(-t)^stretch;label=1;};
+			// entrée loin axe ; densité l=1 
+		border db(t=h1bb,0){ x=-l1real; y=t;label=1;};
+			// entrée proche axe ; densité l=1
+
+		
+		// autres dimensions : -l1b = -1 à l2b = 4 
+                border c2(t=0,h1b){x=l2b;y=t; label=5;};
+                border c3(t=l2b,-l1b){x=t;y=h1b; label=5;};
+                border c4(t=h1b,0){x=-l1b;y=t; label=5;};
+			// boite centrale rafinée ; densité o=20
+               
+
+			
+                border g1(t=(l2g-l2b),0){x=l2b+t^stretch; y=h1bb; label=5;};
+                border g2(t=l2b,-l1b){x=t; y=h1bb; label=5;};
+	        border g3(t=0,-(l1-l1b)){x=-l1b-(-t)^stretch; y=h1bb; label=5;};
+			// frontière intérieure pour contraindre la densité de points ; densité m=5 + stretch 
+
+		/*
+		 int l=1;  // densite frontieres ext
+                int m=5;//4;  // densite zone proche axe
+                int o=15;//15; // densite boite centrale 
+                int n=26;//20; //densite obstacle faces frontales
+ 		*/
+		 int l=1;  // densite frontieres ext
+                int m=2;//4;  // densite zone proche axe
+                int o=8;//15; // densite boite centrale 
+                int n=16;//20; //densite obstacle faces frontales
+
+		cout << "dimensions reelles domaine : " << -l1real << " a " << l2real << " et 0 a " << h1real << endl;
+		
+                mesh th2;
+		
+//		plot(c2(h1b*o)+c3((l2b+l1b)*o)+c4(h1b*o)+c((l1+l2)*l)+a1((-l1b+l1)*m)+a2((-ep/2+l1b)*o)
+//               +a3((l2b-ep/2)*o)+a4((l2-l2b)*m)+ba(h1bb*l)+bb((h1-h1bb)*l)+da((h1-h1bb)*l)+db(h1bb*l)
+//	       +obs1(15*n*b)+g1((l2g-l2b)*m)+g2((l2b+l1b)*m)+g3((l1-l1b)*m),wait=1);//
+	
+               // mesh E :
+               th2=buildmesh(c2(h1b*o)+c3((l2b+l1b)*o)+c4(h1b*o)+c((l1+l2)*l)+a1((-l1b+l1)*m)+a2((-ep2/2+l1b)*o)
+               +a3((l2b-ep1/2)*o)+a4((l2-l2b)*m)+ba(h1bb*l)+bb((h1-h1bb)*l)+da((h1-h1bb)*l)+db(h1bb*l)
+	       +obs1(15*n*b)+g1((l2g-l2b)*m)+g2((l2b+l1b)*m)+g3((l1-l1b)*m));
+
+/*		th2=buildmesh(c((l1+l2)*l)+a1((-l1b+l1)*m)+a2((-ep2/2+l1b)*o)
+               +a3((l2b-ep1/2)*o)+a4((l2-l2b)*m)+ba(h1bb*l)+bb((h1-h1bb)*l)+da((h1-h1bb)*l)+db(h1bb*l)
+	       	+obs1(15*n*b));
+*/
+		plot(th2,wait=1);
+
+		fespace femp2xfemp2xfemp(th2,[P2,P2,P1]);
+                savemesh(th2,"meshdns.msh");
+		int Ntri=th2.nt;		
+
+		cout << "nombre de points = " << Ntri << endl;		
+
+
+		

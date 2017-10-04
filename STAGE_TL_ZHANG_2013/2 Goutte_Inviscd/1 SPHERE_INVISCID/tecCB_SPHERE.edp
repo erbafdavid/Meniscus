@@ -1,0 +1,131 @@
+	mesh Th=readmesh("mesh.msh");
+	fespace Xh(Th,P2);
+	fespace Mh(Th,P1);
+	fespace XhxMhxMh(Th,[P2,P1,P1]);
+        XhxMhxMh<complex> [phi,p,eta];
+        Xh utr,uti;
+	Mh ptr,pti;
+        Mh xx,yy;
+        xx=x;	
+        yy=y;
+	int N;
+        real freqR,freqI;
+/* // Premiere methode : lecture dans un fichier défini
+	{
+		ifstream fich("Eigen0adj-1R10v4.txt");
+		fich >> phi[];
+		fich >> N;
+		fich >> freqR;
+		fich >> freqI;
+	}
+*/
+// Seconde methode : passage du fichier en argument
+// usage : Frefem++ tecCB_SPHERE.edp < "nom du fichier"	
+        {
+		cin >> phi[];
+		cin >> N;
+		cin >> freqR;
+		cin >> freqI;
+	}
+
+
+// 
+
+cout << "FREQUENCE DU MODE : " << freqR << " + i " << freqI << endl;
+
+// RENORMALISATION :
+phi[] = 1/(eta(0,1))*phi[];
+
+
+
+
+
+	XhxMhxMh[phipr,ppr,etar]=[real(phi),real(p),real(eta)];
+	XhxMhxMh[phipi,ppi,etai]=[imag(phi),imag(p),imag(eta)];
+	utr=phipr;
+	uti=phipi;
+	ptr=ppr;
+	pti=ppi;
+	Xh ur = dx(phipr);
+	Xh ui = dx(phipi);
+	Xh vr = dy(phipr);
+	Xh vi = dy(phipi);
+
+
+
+	
+// POUR AFFICHER LES CHAMPS phi et P	
+	
+	plot(Th,wait=1);
+	plot(phipr,cmm="Eigen  Vector of sloshing problem : real(phi)"  ,wait=1,value=1);
+	plot(phipi,cmm="Eigen  Vector of sloshing problem : imag(phi)"  ,wait=1,value=1,ps="2_3_1_potentiel_de_vitesse.eps");
+//	plot(ur,cmm="Eigen  Vector of sloshing problem : real(u)"  ,wait=1,value=1);
+//	plot(vr,cmm="Eigen  Vector of sloshing problem : real(v)"  ,wait=1,value=1);
+	plot([ui,vi],cmm="Eigen  Vector of sloshing problem : velocity field"  ,wait=1,value=1,ps="2_3_1_champ_de_vitesse.eps");
+	
+	plot(ptr,cmm="Eigen  Vector of sloshing problem : real(p)"  ,wait=1,value=1,ps="2_3_1_pression.eps");
+	plot(pti,cmm="Eigen  Vector of sloshing problem : imag(p)"  ,wait=1,value=1);
+	
+
+// Pour construire un fichier contenant les valeurs de eta
+
+	{ofstream ff("ETA_SPHERE.dat");
+	real theta,XX,YY;
+	for (int ii=0;ii<500;ii++)
+	 {
+	 theta = ii/500.*pi;
+	 YY = cos(theta);
+	 XX = sin(theta);
+	 ff << theta << " " << real(eta(XX,YY)) << " " << imag(eta(XX,YY)) << endl;
+	 }
+	 }
+// pour afficher avec gnuplot
+	/*{
+	ofstream fff("plot.gnu");
+	fff << "plot \"ETA_SPHERE.dat\" w l,  \"ETA_SPHERE.dat\" u 1:3 w l "
+	    << endl 
+	    << "pause 5" << endl
+	    <<  "set term postscript" << endl
+	    <<  "set output \"ETA_SPHERE.eps\" " << endl
+	    <<  "replot" << endl << "quit" << endl;
+	 }*/
+	{
+	ofstream fff("plot.gnu");
+	fff << "plot \"ETA_SPHERE.dat\" w l,  \"ETA_SPHERE.dat\" u 1:3 w l "
+	    << endl 
+	    << "pause 5" << endl
+	    <<  "set term pdf" << endl
+	    <<  "set output \"ETA_SPHERE.pdf\" " << endl
+	    <<  "replot" << endl << "quit" << endl;
+	 }
+	 exec("cat plot.gnu | gnuplot");
+	       
+	       
+	        
+		
+	
+// pour faire les figures avec tecplot
+
+
+
+        ofstream champ2D("MODE_SPHERE.dat");
+        {
+                champ2D<< "VARIABLES= \"x\" , \"y\" , \"phipr\",\"phipi\", \"ui\",\"vi\",\"pr\",\"pi\" "<< endl;
+                champ2D<< "ZONE F=FEPOINT,ET=TRIANGLE,N=" << Th.nv << ",E=" << Th.nt << endl;
+       
+                for (int j=0; j<Th.nv; j++)
+                {
+                        champ2D<< xx[][j] << " " << yy[][j]  << " " << phipr[][j] <<  " " << phipi[][j] << " " <<
+			          ui[][j] << " "<< vi[][j] << " " << ptr[][j] << " " << pti[][j] << " "<<  endl;
+                };
+
+                for (int i=0; i<Th.nt; i++)
+                {
+                        champ2D<< Th[i][0]+1 << " " << Th[i][1]+1 << " " << Th[i][2]+1 << endl;
+                };
+	
+	champ2D<< "TEXT T = <greek>w</greek><sub>r</sub>:" <<   freqI   << endl;
+	champ2D<< "TEXT T = <greek>w</greek><sub>i</sub>:" <<   freqR << endl; 	
+        }
+
+

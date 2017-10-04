@@ -1,0 +1,15 @@
+real aa0,aa1,aa2,aa3,aa4,aa5,aa6,aa7,aa8,aa9,aa10,aa11,aa12;
+
+// coefficients de la décomposition en polynomes de Legendre
+
+		aa0= 2.207;
+		aa1= 0.0001245;
+		aa2= 0.3705;
+		aa3= 0.1969;
+		aa4= 0.1589;
+		aa5= 0.1244;
+		aa6= 0.0963;
+		aa7= 0.0784;
+		aa8= 0.05924;
+		aa9= 0.05266;
+		aa10 =0.0;

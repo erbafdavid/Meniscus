@@ -1,0 +1,523 @@
+% This is file JFM2esam.tex
+% first release v1.0, 20th October 1996
+%       release v1.01, 29th October 1996
+%       release v1.1, 25th June 1997
+%       release v2.0, 27th July 2004
+%   (based on JFMsampl.tex v1.3 for LaTeX2.09)
+% Copyright (C) 1996, 1997 Cambridge University Press
+
+\NeedsTeXFormat{LaTeX2e}
+
+\documentclass{jfm}
+\usepackage[T1]{fontenc}
+%\documentclass[referee]{jfm} %for double spaced output for submission
+
+% See if the author has AMS Euler fonts installed: If they have, attempt
+% to use the 'upmath' package to provide upright math.
+
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{rotate}
+\usepackage{epstopdf}
+\usepackage{pstricks}
+
+\ifCUPmtlplainloaded \else
+  \checkfont{eurm10}
+  \iffontfound
+    \IfFileExists{upmath.sty}
+      {\typeout{^^JFound AMS Euler Roman fonts on the system,
+                   using the 'upmath' package.^^J}%
+       \usepackage{upmath}}
+      {\typeout{^^JFound AMS Euler Roman fonts on the system, but you
+                   dont seem to have the}%
+       \typeout{'upmath' package installed. JFM.cls can take advantage
+                 of these fonts,^^Jif you use 'upmath' package.^^J}%
+       \providecommand\upi{\pi}%
+      }
+  \else
+    \providecommand\upi{\pi}%
+  \fi
+\fi
+
+% See if the author has AMS symbol fonts installed: If they have, attempt
+% to use the 'amssymb' package to provide the AMS symbol characters.
+
+\ifCUPmtlplainloaded \else
+  \checkfont{msam10}
+  \iffontfound
+    \IfFileExists{amssymb.sty}
+      {\typeout{^^JFound AMS Symbol fonts on the system, using the
+                'amssymb' package.^^J}%
+       \usepackage{amssymb}%
+       \let\le=\leqslant  \let\leq=\leqslant
+       \let\ge=\geqslant  \let\geq=\geqslant
+      }{}
+  \fi
+\fi
+
+% See if the author has the AMS 'amsbsy' package installed: If they have,
+% use it to provide better bold math support (with \boldsymbol).
+
+\ifCUPmtlplainloaded \else
+  \IfFileExists{amsbsy.sty}
+    {\typeout{^^JFound the 'amsbsy' package on the system, using it.^^J}%
+     \usepackage{amsbsy}}
+    {\providecommand\boldsymbol[1]{\mbox{\boldmath $##1$}}}
+\fi
+
+
+%%% Example macros (some are not used in this sample file) %%%
+
+% For units of measure
+\newcommand\dynpercm{\nobreak\mbox{$\;$dyn\,cm$^{-1}$}}
+\newcommand\cmpermin{\nobreak\mbox{$\;$cm\,min$^{-1}$}}
+
+
+% Various bold symbols
+\providecommand\bnabla{\boldsymbol{\nabla}}
+\providecommand\bcdot{\boldsymbol{\cdot}}
+\newcommand\biS{\boldsymbol{S}}
+\newcommand\etb{\boldsymbol{\eta}}
+
+% For multiletter symbols
+\newcommand\Real{\mbox{Re}} % cf plain TeX's \Re and Reynolds number
+\newcommand\Imag{\mbox{Im}} % cf plain TeX's \Im
+\newcommand\Rey{\mbox{\textit{Re}}}  % Reyno\usepackage{graphicx}lds number
+\newcommand\Pran{\mbox{\textit{Pr}}} % Prandtl number, cf TeX's \Pr product
+\newcommand\Pen{\mbox{\textit{Pe}}}  % Peclet number
+
+% For sans serif characters:
+% The following macros are setup in JFM.cls for sans-serif fonts in text
+% and math.  If you use these macros in your article, the required fonts
+% will be substitued when you article is typeset by the typesetter.
+%
+% \textsfi, \mathsfi   : sans-serif slanted
+% \textsfb, \mathsfb   : sans-serif bold
+% \textsfbi, \mathsfbi : sans-serif bold slanted (doesnt exist in CM fonts)
+%
+% For san-serif roman use \textsf and \mathsf as normal.
+%
+\newcommand\ssC{\mathsf{C}}    % for sans serif C
+\newcommand\sfsP{\mathsfi{P}}  % for sans serif sloping P
+\newcommand\slsQ{\mathsfbi{Q}} % for sans serif bold-sloping Q
+
+% Hat position
+\newcommand\hatp{\skew3\hat{p}}      % p with hat
+\newcommand\hatR{\skew3\hat{R}}      % R with hat
+\newcommand\hatRR{\skew3\hat{\hatR}} % R with 2 hats
+\newcommand\doubletildesigma{\skew2\tilde{\skew2\tilde{\Sigma}}}
+%       italic Sigma with double tilde
+
+% array strut to make delimiters come out right size both ends
+\newsavebox{\astrutbox}
+\sbox{\astrutbox}{\rule[-5pt]{0pt}{20pt}}
+\newcommand{\astrut}{\usebox{\astrutbox}}
+
+\newcommand\GaPQ{\ensuremath{G_a(P,Q)}}
+\newcommand\GsPQ{\ensuremath{G_s(P,Q)}}
+\newcommand\p{\ensuremath{\partial}}
+\newcommand\tti{\ensuremath{\rightarrow\infty}}
+\newcommand\kgd{\ensuremath{k\gamma d}}
+\newcommand\shalf{\ensuremath{{\scriptstyle\frac{1}{2}}}}
+\newcommand\sh{\ensuremath{^{\shalf}}}
+\newcommand\smh{\ensuremath{^{-\shalf}}}
+\newcommand\squart{\ensuremath{{\textstyle\frac{1}{4}}}}
+\newcommand\thalf{\ensuremath{{\textstyle\frac{1}{2}}}}
+\newcommand\Gat{\ensuremath{\widetilde{G_a}}}
+\newcommand\ttz{\ensuremath{\rightarrow 0}}
+\newcommand\ndq{\ensuremath{\frac{\mbox{$\partial$}}{\mbox{$\partial$} n_q}}}
+\newcommand\sumjm{\ensuremath{\sum_{j=1}^{M}}}
+\newcommand\pvi{\ensuremath{\int_0^{\infty}%
+  \mskip \ifCUPmtlplainloaded -30mu\else -33mu\fi -\quad}}
+
+\newcommand\etal{\mbox{\textit{et al.}}}
+\newcommand\etc{etc.\ }
+\newcommand\eg{e.g.\ }
+\newcommand\ie{i.e.\ }
+
+
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+
+\newcommand\be{\begin{equation}}
+\newcommand\ee{\end{equation}}
+\newcommand\bea{\begin{eqnarray}}
+\newcommand\eea{\end{eqnarray}}
+
+\newcommand\DP[2]{\frac{\partial #1}{\partial #2}}
+
+
+
+%\title[On disks and sphere]{On the forces on weakly tilted disks and weakly rotating spheres, 
+%and on the existence of steady oblique paths for freely rising or falling objects }
+
+%\title{On disks and spheres falling or rising along a steady oblique path}
+\title{Calcul de la courbure}
+
+ 
+
+
+
+
+
+\author%[D. Fabre]%
+{
+%  \thanks{Present address: Fluid Mech Inc.,
+%24 The Street, Lagos, Nigeria.}
+David Fabre
+}
+
+%\affiliation{$^1$Universit\'e de Toulouse; INPT, UPS; IMFT (Institut de M\'ecanique des Fluides de Toulouse); All\'ee Camille Soula, F-31400 Toulouse, France.\\ $^2$CNRS; IMFT; F-31400 Toulouse, France.}
+
+\pubyear{2013}
+\volume{}
+\pagerange{}
+\date{\today}
+%\setcounter{page}{1}
+
+\begin{document}
+
+\maketitle
+
+
+
+%\begin{abstract}
+%\end{abstract}
+%\begin{keywords}
+%\end{keywords}
+
+
+VERIFIER LES SIGNES
+
+\section{Formules de base}
+
+\begin{figure}
+\input{Curvature.pstex_t}
+\end{figure}
+
+On cherche a exprimer la courbure d'une surface ayant une sym�trie de r�volution.
+
+La courbure $K$ se d�compose en deux termes : 
+$$
+K = K^{(a)} + K^{(b)} 
+\quad \mbox{ avec }  
+\left| K^{(a)} \right|  = \frac{1}{| MC^{(a)} |} 
+\quad \mbox{ et } 
+\left| K^{(b)} \right| =  \frac{1}{| MC^{(b)} | }
+$$
+
+Le premier terme est la courbure dans le plan m�ridien ; g�om�triquement, on l'exprime avec le point  $C^{(a)}$ qui est le centre du cercle osculateur � la courbe m�ridienne. Le second terme est la courbure dans le plan orthogonal ; on l'exprime avec le point $C^{(b)}$ qui est l'intersection entre la normale � la courbe et l'axe de sym�trie (voir figure a).
+
+On prend la convention suivante pour le signe de $K^{(a)}$ et  $K^{(b)}$ :
+celles-ci sont positives si la surface est convexe et n�gatives si la surface est concave. Par exemple, dans le cas repr�sent� sur la figure, on a $K^{(a)}>0$ et  $K^{(b)}<0$.
+
+
+Le premier terme se calcule a partir des formules de Fr�net.
+On suppose que la courbe m�ridienne, dans le plan $(r,z)$, admet une repr�sentation param�trique $M(s)$, o� $s$ est l'abscisse curviligne. On note $\bf T$ le vecteur tangent � la courbe dans le plan m�ridien, et $\bf N$ le vecteur normal. On a : 
+
+$$
+{\bf T} = \DP{\vec{OM}}{s}
+$$
+
+
+
+
+$$
+\DP{{\bf T}}{s} = - K^{(a)} {\bf N}
+$$
+
+$$
+\DP{{\bf N}}{s} = K^{(a)} {\bf T}
+$$
+
+En pratique on peut aussi utiliser la formule suivante :
+
+$$
+K^{(a)} =  {\bf T} \cdot \DP{{\bf N}}{s} =   {\bf T} \cdot (\nabla {\bf N}) \cdot {\bf T} 
+$$
+
+
+Le second terme a l'expression suivante :
+
+$$
+K^{(b)} =  \frac{ N_{,r}}{r}
+$$
+
+o� $N_{,r} = {\bf N} \cdot {\bf e_r}$ est la composante radiale du vecteur normal.
+
+\section{Courbure de la forme moyenne}
+
+On suppose que la forme moyenne de l'interface est donn�e par un param�trage de la forme $M_0(s_0)$, o� $s_0$ est l'abscisse curviligne associ�e. On note $T_0$, $N_0$, $K_0$ les vecteurs tangents, normal, et la courbure associ�e. Ceux-ci sont donn�s par :
+
+$$
+{\bf T}_0 = \DP{\vec{OM_0}}{s_0}
+$$
+
+
+\begin{equation}
+K_0 = K_0^{(a)} + K_0^{(b)} =  {\bf T_0} \cdot \DP{{\bf N}_0}{s_0} 
++ \frac{{\bf N}_{0,r}}{r}
+\end{equation}
+
+\section{Perturbation}
+
+On suppose maintenant que la surface oscille faiblement autour de la forme moyenne pr�c�demment d�finie (voir figure b).
+
+On choisit de param�trer la d�formation de la mani�re suivante :
+$$
+\vec{OM}(s_0)  = \vec{OM_0}(s_0) + \epsilon \eta(s_0) {\bf N}_0
+$$
+
+Dans cette expression, $\epsilon$ est un petit param�tre, et la fonction $\eta$ correspond � l'amplitude de la d�formation mesur�e dans la direction normale � la surface {\em moyenne}. Notons 
+que l'on garde le param�trage par la variable $s_0$ qui est l'abscisse curviligne de la forme moyenne 
+(et qui n'est pas identique � l'abscisse curviligne $s$ de la surface d�form�e).
+
+On injecte maintenant ce param�trage dans les formules pr�c�dentes, et on lin�arise par rapport � 
+$\epsilon$, ce qui aboutit � : 
+
+
+$$
+\DP{s}{s_0} = \left| \DP{\vec{OM}}{s_0} \right| = 1 - \epsilon \eta K_0^{(a)} ;
+$$
+
+$$
+{\bf T} = \left(\DP{s}{s_0}\right)^{-1} \DP{\vec{OM}}{s_0} = {\bf T}_0 +  \epsilon  {\bf T}_1 ; \quad 
+{\bf T}_1 = - \DP{\eta}{s_0}{\bf N_0}
+$$
+
+$$
+{\bf N} = {\bf N}_0 +  \epsilon  {\bf N}_1 ; \quad 
+{\bf N}_1 = \DP{\eta}{s_0}{\bf T_0}
+$$
+
+$$
+K^{(a)} = {\bf T} \cdot \DP{{\bf N}}{s} =  
+\left( {\bf T}_0 +  \epsilon  {\bf T}_1 \right) \left( \DP{s_0}{s} \right) 
+ \DP{}{s_0}  \left({\bf N}_0 +  \epsilon  {\bf N}_1 \right)
+$$
+$$
+= K^{(a)}_0 + \epsilon K^{(a)}_1
+$$
+$$
+K^{(a)}_1 = 
+-\DP{^2 \eta }{s_0^2} - \left( K^{(a)}_0 \right)^2 \eta 
+$$ 
+
+
+De m�me, pour la seconde composante de la courbure : 
+
+$$
+K^{(b)} = \frac{ N_{,r}}{r} = \frac{ N_{0,r} + \epsilon N_{1,r}}{r + \epsilon \eta N_{0,r}}
+$$
+$$
+= 
+K^{(b)}_0 + \epsilon K^{(b)}_1
+$$
+$$
+K^{(b)}_1 = - \frac{T_{0,r}}{r} \DP{\eta}{s_0} -  \left( K^{(b)}_0 \right)^2 \eta 
+$$
+
+Au final on a donc :
+$$
+K = K_0 + \epsilon K_1
+$$
+
+$$
+K_0   = {\bf T_0} \DP{\bf N_0}{s_0}  + \frac{N_{0,r}}{r}
+$$
+
+$$
+K_1   = - \frac{1}{r} \DP{}{s_0} \left( r \DP{\eta}{s_0} \right) -
+\left[ \left| \DP{\bf N_0}{s_0} \right|^2  + \frac{N_{0,r}^2}{r^2} \right] \eta
+$$
+
+Dans cette derni�re expression on a utilis� l'identit� $T_{0,r} = \partial r / \partial s_0$.
+
+\section{Cas particulier : forme moyenne sph�rique}
+
+On suppose que la forme moyenne est une sph�re de rayon $R_0$. On utilise les coordonn�es sph�riques $(R,\Theta)$. Dans ce cas, l'abscisse curviligne de la forme moyenne $s_0$ est donn� par 
+$s_0  = R_0 \Theta$, et on a :
+$$
+r = R_0 \sin \Theta ; \quad z = R_0 \cos \Theta; \quad \DP{}{s_0} = \frac{1}{R_0} \DP{}{\Theta}
+$$
+$$
+{\bf N_0} = {\bf e_R} ; \quad {\bf T_0} = {\bf e_\Theta} ; \quad N_{0,r} = \sin \Theta; 
+$$
+
+En injectant dans les formules pr�c�dentes, on aboutit � :
+$$
+K_0 = \frac{2}{R_0}
+$$
+$$ 
+K_1 = - \frac{1}{R_0^2 \sin \Theta} \DP{}{\Theta} \left( \sin \Theta \DP{\eta}{\theta} \right) 
+- \frac{2}{R_0^2} \eta
+$$
+Ce qui correspond bien aux formules obtenues dans ce cas.
+
+\section{Param�trage selon $r$}
+
+V�rifions que les formules g�n�rales trouv�e ici est �quivalente � celles utilis�es dans le cas o� la surface est param�tr�e par $r$ et non par $s_0$ C'est-�-dire : 
+
+$$
+z = H(r) = h_0(r) + \epsilon \eta_z (r)
+$$
+
+Dans ce cas le calcul de la courbure conduit � :
+$$
+K =  K_0(r) + \epsilon k(r)
+$$
+
+avec :
+$$
+K_0(r) = -\frac{1}{r} \DP{}{r} \left( \frac{r}{\sqrt{1+ h_0'^2}} \DP{h_0}{r} \right)
+$$
+
+$$
+k(r) = -\frac{1}{r} \DP{}{r} \left( \frac{r}{\left(1+ h_0'^2\right)^3} \DP{\eta_z}{r} \right) 
+$$
+
+(Par rapport aux formules donn�es dans le rapport de J�r�me on a chang� les signes afin d'utiliser la m�me convention sur les normales, et on a rectifi� une petite erreur dans le terme $k$).
+
+
+La correspondance entre les deux formulations s'�tablit en utilisant les identit�s suivantes :
+
+$$ 
+\eta_z(r) = \frac{\eta(s_0)}{N_{0,z}}  ; 
+\quad 
+T_{0,r} = N_{0,z} = \frac{1}{\sqrt{1+ h_0'^2}}; 
+\quad 
+T_{0,z} = -N_{0,r} =  \frac{h_0'}{\sqrt{1+ h_0'^2}}
+$$
+
+$$
+\DP{}{r} = N_{0,z} \DP{}{s_0}
+$$
+
+$$
+k(r) = K_1(s_0)  - \DP{K_0}{s_0} T_{0,z} \eta_z(r)
+$$
+
+(formules v�rifi�es avec Maple)
+
+\section{Calcul de la forme d'�quilibre par m�thode de Newton}
+
+Le but est de construire un maillage tel que le long de sa fronti�re, on ait l'�quilibre de Laplace :
+
+\begin{equation}
+F = K - \frac{\Delta P}{\sigma} = 0.
+\end{equation}
+
+avec 
+$$
+\Delta P = \Delta P_b + \Delta \rho g z
+$$
+
+
+
+
+Ici $\Delta P_b$ est la diff�rence de pression � la base de la bulle ($z=0$), que l'on impose dans le calcul
+(on pourrait aussi imposer le volume dans la bulle et consid�rer $\Delta P_b$ comme une inconnue, mais cela reste � faire proprement).
+
+La m�thode est la suivante :
+
+
+
+\begin{enumerate}
+
+\item On part d'un maillage correspondant � une forme approximative de la bulle (par exemple un d�veloppement en s�rie de Legendre issu des exp�riences).
+
+\item On �crit un d�veloppement de Taylor de la fonction $F$ par rapport � des petites variations $\eta$
+de la forme de la surface :
+
+$$ 
+F \approx F_0 + F_1 = 0 \quad  \mbox{ avec } 
+F_0 = K_0 - (\Delta P + \Delta \rho g z)/ \sigma , 
+\quad  
+F_1 = K_1 - \frac{\Delta \rho g}{\sigma} N_{0,z} \eta
+$$ 
+o� $K_1$ est donn� (en fonction de $\eta$) par la formule de la section pr�c�dente.
+
+\item On inverse la relation pr�c�dente, ce qui donne la fonction $\eta$ correspondant au d�placement
+qu'il faut donner � l'interface pour assurer la condition $F=0$ (sous l'hypoth�se de lin�arisation).
+
+\item On construit un champ de vecteurs $\bf U$, d�fini � l'int�rieur du domaine, correspondant � un d�placement lagrangien v�rifiant ${\bf U} = \eta {\bf N_0}$ sur la fronti�re du domaine et �tant suffisamment r�gulier � l'int�rieur (en pratique on r�soud une �quation de Poisson).
+
+\item On d�forme le maillage selon le champ de vecteur $\bf U$, ce qui aboutit � un nouveau maillage en principe plus proche de la solution d'�quilibre.
+
+\item On r�p�te l'op�ration de mani�re it�rative a partir du point ($b$), jusqu'� convergence
+(c'est � dire jusqu'� ce que la quantit� $F_0$ devienne effectivement n�gligeable.
+
+
+\end{enumerate}
+
+
+
+
+
+
+\section{Impl�mentation avec Freefem}
+
+Pour le calcul de la courbure moyenne, il faut commencer par interpoler les vecteurs normal (et tangent) 
+sous forme de champs P1 d�finis sur la fronti�re :
+
+
+
+\begin{verbatim}
+(...)
+
+mesh Shempty=emptymesh(Sh);
+fespace Wh1(Shempty,P1);
+Wh1 N0r,N0z,T0r,T0z,K0a,K0b,test ;
+
+problem CalcN0r(N0r,test)=
+ int1d(Shempty,qfe=qf3pE)(N0r*test)-int1d(Shempty,qfe=qf3pE)(N.x*test);
+problem CalcN0z(N0z,test)=
+ int1d(Shempty,qfe=qf3pE)(N0z*test)-int1d(Shempty,qfe=qf3pE)(N.y*test);
+
+CalcN0r;
+CalcN0z;
+T0r =  N0z;
+T0z = -N0r;
+
+macro Ds(u1,u2)
+[dx(u1)*T0r+dy(u1)*T0z,dx(u2)*T0r+dy(u2)*T0z]
+//
+
+problem ComputeK0a(K0a,test)=
+ int1d(Shempty,qfe=qf3pE)(K0a*test)
+-int1d(Shempty,qfe=qf3pE)(Ds(N0r,N0z)'*[T0r,T0z]*test);
+ComputeK0a;
+
+problem ComputeK0b(K0b,test)=
+ int1d(Shempty,qfe=qf3pE)(K0b*test*x)
+-int1d(Shempty,qfe=qf3pE)(N0r*test);
+ComputeK0b;
+
+
+\end{verbatim}
+
+
+Pour les perturbations, le terme de courbure se traite par int�gration par partie :
+
+$$
+p = \sigma K_1 
+$$
+$$
+\int_{\cal S}  \eta^\dag p r d \ell 
+ = \sigma 
+ \int_{\cal S} \left (
+ \DP{\eta^\dag}{s_0} \DP{\eta}{s_0} - \left[ \left| \DP{\bf N_0}{s_0} \right|^2  + \frac{N_{0,r}^2}{r^2} \right]  \eta^\dag \eta \right) r d \ell 
+\mbox{ (+ termes de bord)} 
+$$
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
+
+

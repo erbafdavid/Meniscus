@@ -1,0 +1,164 @@
+		verbosity = 0;
+
+		// Polynome de Legendre en cos(t)
+	  
+		real[int] PLR(12);
+		include "Legendre_Coefs.txt"
+
+
+	        func real PL(int n, real t)
+		{
+		  if (n==0)
+		  { 
+		      return 1;
+		  }
+		  else if (n==1)
+		  {
+		      return cos(pi-t);
+		  }
+		}
+
+		func real PL2(real t)
+		{		 
+		    //  return (2.*2-1.)/2*cos(pi-t)*PL(1,t)-(2-1)/2*PL(0,t); 
+			return 1./2*(3*(cos(pi-t))^2-1);
+		}
+		
+		func real PL3(real t)
+		{		 
+		      //return (2.*3-1.)/3*cos(pi-t)*PL2(t)-(3-1)/3*PL(1,t); 
+			return 1./2*(5*(cos(pi-t))^3-3*cos(pi-t));
+		}
+		  func real PL4(real t)
+		{		 
+		      //return (2.*4-1.)/4*cos(pi-t)*PL3(t)-(4-1)/4*PL2(t); 
+			return  1./8*(35*(cos(pi-t))^4-30*(cos(pi-t))^2+3);
+		}
+		  func real PL5(real t)
+		{		 
+		      //return (2.*5-1.)/5*cos(pi-t)*PL4(t)-(5-1)/5*PL3(t); 
+			return  1./8*(63*(cos(pi-t))^5-70*(cos(pi-t))^3+15*cos(pi-t));
+		}
+		  func real PL6(real t)
+		{		 
+		      //return (2.*6-1.)/6*cos(pi-t)*PL5(t)-(6-1)/6*PL4(t); 
+			return  1./16*(231*(cos(pi-t))^6-315*(cos(pi-t))^4+105*(cos(pi-t))^2-5);
+		}
+		 func real PL7(real t)
+		{		 
+		     // return (2.*7-1.)/7*cos(pi-t)*PL6(t)-(7-1)/7*PL5(t); 
+			return  1./16*(429*(cos(pi-t))^7-693*(cos(pi-t))^5+315*(cos(pi-t))^3-35*cos(pi-t));
+		}		
+		 func real PL8(real t)
+		{		 
+		     // return (2.*8-1.)/8*cos(pi-t)*PL7(t)-(8-1)/8*PL6(t); 
+			return  1./128*(6435*(cos(pi-t))^8-12012*(cos(pi-t))^6+6930*(cos(pi-t))^4-1260*(cos(pi-t))^2+35);
+		}
+	        func real PL9(real t)
+		{		 
+		      //return (2.*9-1.)/9*cos(pi-t)*PL8(t)-(9-1)/9*PL7(t); 
+			return  1./128*(12155*(cos(pi-t))^9-25740*(cos(pi-t))^7+18018*(cos(pi-t))^5-4620*(cos(pi-t))^3+315*cos(pi-t));
+		}
+		 func real PL10(real t)
+		{		 
+		     // return (2.*10-1.)/10*cos(pi-t)*PL9(t)-(10-1)/10*PL8(t); 
+			return  1./256*(46189*(cos(pi-t))^10-109395*(cos(pi-t))^8+90090*(cos(pi-t))^6-30030*(cos(pi-t))^4+3465*(cos(pi-t))^2-63);
+		}
+		 func real PL11(real t)
+		{		 
+		      return (2.*11-1.)/11*cos(pi-t)*PL10(t)-(11-1)/11*PL9(t); 
+		}
+		 func real PL12(real t)
+		{		 
+		      return (2.*12-1.)/12*cos(pi-t)*PL11(t)-(12-1)/12*PL10(t); 
+		}
+		func real PL13(real t)
+		{		 
+		      return (2.*13-1.)/13*cos(pi-t)*PL12(t)-(13-1)/13*PL11(t); 
+		}
+	
+
+macro RR(t) 
+(aa0*PL(0,t)+aa1*PL(1,t)+aa2*PL2(t)+aa3*PL3(t)+aa4*PL4(t)+aa5*PL5(t)+aa6*PL6(t)+aa7*PL7(t)+aa8*PL8(t)+aa9*PL9(t)+aa10*PL10(t))
+//
+
+
+
+
+
+
+                border BulleComplete(t=0,pi)
+    {x=(aa0*PL(0,t)+aa1*PL(1,t)+aa2*PL2(t)+aa3*PL3(t)+aa4*PL4(t)+aa5*PL5(t)+aa6*PL6(t)+aa7*PL7(t)+aa8*PL8(t)+aa9*PL9(t)+aa10*PL10(t))*sin(t);
+     y=(aa0*PL(0,t)+aa1*PL(1,t)+aa2*PL2(t)+aa3*PL3(t)+aa4*PL4(t)+aa5*PL5(t)+aa6*PL6(t)+aa7*PL7(t)+aa8*PL8(t)+aa9*PL9(t)+aa10*PL10(t))*cos(t);
+				    label=2;};
+//		border axe(t=-aa0,aa0){x=0;y=t;label=1;};
+
+
+
+
+/*
+for (int i=0;i<100;i++)	
+{
+real t = pi*i/100;
+real xx=(aa0*PL(0,t)+aa1*PL(1,t)+aa2*PL2(t)+aa3*PL3(t)+aa4*PL4(t)+aa5*PL5(t)+aa6*PL6(t)+aa7*PL7(t)+aa8*PL8(t)+aa9*PL9(t)+aa10*PL10(t))*sin(t);
+real yy=(aa0*PL(0,t)+aa1*PL(1,t)+aa2*PL2(t)+aa3*PL3(t)+aa4*PL4(t)+aa5*PL5(t)+aa6*PL6(t)+aa7*PL7(t)+aa8*PL8(t)+aa9*PL9(t)+aa10*PL10(t))*cos(t);
+cout << " t " << t << " x " << xx << " y " << yy << endl;
+}
+*/
+
+
+real thetatube = 2.76;
+cout << " theta tube : " << thetatube 
+     << " ; RR = " << RR(thetatube) 
+     << " ; r = " <<  RR(thetatube)*sin(thetatube) 
+     << " ; z = " <<  RR(thetatube)*cos(thetatube) << endl;
+
+real ztop = RR(0);
+real zbase = RR(thetatube)*cos(thetatube);
+real rbase = RR(thetatube)*sin(thetatube);
+
+
+real R=1.0;  
+real T=1.0;
+real RMAX = 5.0;
+real dex=1.0;
+real din=0.7;
+
+
+
+
+border Bulle(t=thetatube,-thetatube)
+    {x=0.6*RR(t)*sin(t)/rbase;  y=0.6*(RR(t)*cos(t)-zbase)/rbase;label=2;};
+
+
+border Base(t=-0.6,+0.6){x = t ; y = 0;label=6;};
+//border Axe(t=zbase,ztop){x=0 ; y = t-zbase;};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+border BulleInt(t=thetatube,-thetatube){x=0.6*RR(t)*sin(t)/rbase;  y=0.6*(RR(t)*cos(t)-zbase)/rbase;   label=2;};
+border BulleOut(t=-thetatube,thetatube){x=10*RR(t)*sin(t)/rbase;  y=10*(RR(t)*cos(t)-zbase)/rbase;   label=3;};
+
+border Base1(t=10,0.6){x = t ; y = 0;label=1;};
+border Base2(t=-0.6,-10){x = t ; y = 0;label=1;};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+mesh Thin = buildmesh(Bulle(300)+Base(60) ,  fixeborder=true);
+mesh Thex = buildmesh(BulleOut(-100)+BulleInt(-300)+Base1(-60)+Base2(-60) ,  fixeborder=true);
+//mesh ThE = emptymesh(Thin);
+
+
+plot(Thin,wait=1);
+plot(Thex,wait=1);
+plot(Thin,Thex,wait=1);
+
+savemesh(Thin,"MeshBulle_guess1.msh");
+savemesh(Thex,"MeshBulle_guess2.msh");
+
+
+
+
+
+
+
+
+
+
+

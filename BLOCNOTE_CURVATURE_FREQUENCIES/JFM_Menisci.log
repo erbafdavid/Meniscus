@@ -1,0 +1,646 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.12.4)  4 OCT 2017 09:24
+entering extended mode
+ \write18 enabled.
+ %&-line parsing enabled.
+**JFM_Menisci.tex
+(./JFM_Menisci.tex
+LaTeX2e <2015/01/01>
+Babel <3.9l> and hyphenation patterns for 79 languages loaded.
+(./jfm.cls
+Document Class: jfm 2006/11/13 v1.27 Journal of Fluid Mechanics document class
+\halflineskip=\skip41
+\affilskip=\skip42
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\@indentskip=\skip43
+\smallindent=\skip44
+\@footindent=\skip45
+\@leftskip=\skip46
+\proofbox=\box26
+\rpbdim=\skip47
+\@stequation=\toks14
+\c@subequation=\count84
+\c@table=\count85
+\c@figure=\count86
+LaTeX Info: Redefining \cite on input line 1072.
+) (/usr/local/texlive/2015/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
+))
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks15
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 94.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen102
+\Gin@req@width=\dimen103
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/natbib/natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip48
+\bibsep=\skip49
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count88
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/dvips/rotate.sty
+\@rotdimen=\dimen104
+\@rotbox=\box27
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf.sty
+Package: epstopdf 2010/02/09 v2.5 Conversion with epstopdf on the fly (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+))
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+)))
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pstricks/pstricks.sty
+Package: pstricks 2013/12/12 v0.60 LaTeX wrapper for `PSTricks' (RN,HV)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pstricks/pstricks.tex
+(/usr/local/texlive/2015/texmf-dist/tex/generic/xkeyval/pst-xkey.tex
+File: pst-xkey.tex 2005/11/25 v1.6 PSTricks specialization of xkeyval (HA)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+Package: xkeyval 2014/12/03 v2.7a package option processing (HA)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/xkeyval/xkeyval.tex
+(/usr/local/texlive/2015/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+\XKV@toks=\toks16
+\XKV@tempa@toks=\toks17
+)
+\XKV@depth=\count89
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+)))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pstricks/pst-fp.tex
+`pst-fp' v0.05, 2010/01/17 (hv)
+\pstFP@xs=\count90
+\pstFP@xia=\count91
+\pstFP@xib=\count92
+\pstFP@xfa=\count93
+\pstFP@xfb=\count94
+\pstFP@rega=\count95
+\pstFP@regb=\count96
+\pstFP@regs=\count97
+\pstFP@times=\count98
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.te
+x
+\pgfutil@everybye=\toks18
+\pgfutil@tempdima=\dimen105
+\pgfutil@tempdimb=\dimen106
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-li
+sts.tex))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks19
+\pgfkeys@temptoks=\toks20
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.c
+ode.tex
+\pgfkeys@tmptoks=\toks21
+))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex
+\pgf@x=\dimen107
+\pgf@xa=\dimen108
+\pgf@xb=\dimen109
+\pgf@xc=\dimen110
+\pgf@y=\dimen111
+\pgf@ya=\dimen112
+\pgf@yb=\dimen113
+\pgf@yc=\dimen114
+\c@pgf@counta=\count99
+\c@pgf@countb=\count100
+\c@pgf@countc=\count101
+\c@pgf@countd=\count102
+\pgfutil@tempcnta=\count103
+\pgfutil@tempcntb=\count104
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen115
+\pgfmath@count=\count105
+\pgfmath@box=\box28
+\pgfmath@toks=\toks22
+\pgfmath@stack@operand=\toks23
+\pgfmath@stack@operation=\toks24
+)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.
+tex
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic
+.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigo
+nometric.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.rando
+m.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.compa
+rison.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.
+code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round
+.code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.
+code.tex)
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integ
+erarithmetics.code.tex)))
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count106
+))
+\pgffor@iter=\dimen116
+\pgffor@skip=\dimen117
+\pgffor@stack=\toks25
+\pgffor@toks=\toks26
+)
+\psLoopIndex=\count107
+
+`PSTricks' v2.60  <2014/10/25> (tvz)
+\pst@dima=\dimen118
+\pst@dimb=\dimen119
+\pst@dimc=\dimen120
+\pst@dimd=\dimen121
+\pst@dimg=\dimen122
+\pst@dimh=\dimen123
+\pst@dimm=\dimen124
+\pst@dimn=\dimen125
+\pst@dimo=\dimen126
+\pst@dimp=\dimen127
+\pst@hbox=\box29
+\pst@ibox=\box30
+\pst@boxg=\box31
+\pst@cnta=\count108
+\pst@cntb=\count109
+\pst@cntc=\count110
+\pst@cntd=\count111
+\pst@cntg=\count112
+\pst@cnth=\count113
+\pst@cntm=\count114
+\pst@cntn=\count115
+\pst@cnto=\count116
+\pst@cntp=\count117
+\@zero=\count118
+\pst@toks=\toks27
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pstricks/pstricks.con)
+\psunit=\dimen128
+\psxunit=\dimen129
+\psyunit=\dimen130
+\pst@C@@rType=\count119
+\pslinewidth=\dimen131
+\psk@startLW=\dimen132
+\psk@endLW=\dimen133
+\pst@customdefs=\toks28
+\pslinearc=\dimen134
+\pst@symbolStep=\dimen135
+\pst@symbolWidth=\dimen136
+\pst@symbolLinewidth=\dimen137
+\everypsbox=\toks29
+\psframesep=\dimen138
+\pslabelsep=\dimen139
+\sh@wgridXunit=\dimen140
+\sh@wgridYunit=\dimen141
+\pst@shift=\dimen142
+)
+File: pstricks.tex 2014/10/25 v2.60 `PSTricks' (tvz,hv)
+
+(/usr/local/texlive/2015/texmf-dist/tex/generic/pstricks/pst-fp.tex)
+File: pst-fp.tex 2014/10/25 v2.60 `PST-fp' (hv)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1337.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1341.
+Package xcolor Info: Model `RGB' extended on input line 1353.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1355.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1356.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1357.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1358.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1359.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
+))
+
+
+Found AMS Euler Roman fonts on the system, but you dont seem to have the
+'upmath' package installed. JFM.cls can take advantage of these fonts,
+if you use 'upmath' package.
+
+
+
+
+Found AMS Symbol fonts on the system, using the 'amssymb' package.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks30
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+
+Found the 'amsbsy' package on the system, using it.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks31
+\ex@=\dimen143
+)
+\pmbraise@=\dimen144
+)
+\astrutbox=\box32
+\c@lemma=\count120
+\c@corollary=\count121
+
+(./JFM_Menisci.aux)
+\openout1 = `JFM_Menisci.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+
+(/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count122
+\scratchdimen=\dimen145
+\scratchbox=\box33
+\nofMPsegments=\count123
+\nofMParguments=\count124
+\everyMPshowfont=\toks32
+\MPscratchCnt=\count125
+\MPscratchDim=\dimen146
+\MPnumerator=\count126
+\makeMPintoPDFobject=\count127
+\everyMPtoPDFconversion=\toks33
+) (./JFM_Menisci.toc
+LaTeX Font Info:    Try loading font information for U+msa on input line 3.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 3.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+))
+\tf@toc=\write3
+\openout3 = `JFM_Menisci.toc'.
+
+
+<Shapes_Bo2.jpg, id=1, 200.75pt x 579.16376pt>
+File: Shapes_Bo2.jpg Graphic file (type jpg)
+ <use Shapes_Bo2.jpg>
+Package pdftex.def Info: Shapes_Bo2.jpg used on input line 208.
+(pdftex.def)             Requested size: 76.79883pt x 221.56918pt.
+
+<PV_Bo2.jpg, id=2, 562.1pt x 421.575pt>
+File: PV_Bo2.jpg Graphic file (type jpg)
+ <use PV_Bo2.jpg>
+Package pdftex.def Info: PV_Bo2.jpg used on input line 209.
+(pdftex.def)             Requested size: 230.40234pt x 172.80183pt.
+ (./Curvature1.pspdftex <./FIGURES/Curvature1_pspdftex.pdf, id=3, 324.21124pt x
+ 218.8175pt>
+File: ./FIGURES/Curvature1_pspdftex.pdf Graphic file (type pdf)
+
+<use ./FIGURES/Curvature1_pspdftex.pdf>
+Package pdftex.def Info: ./FIGURES/Curvature1_pspdftex.pdf used on input line 2
+.
+(pdftex.def)             Requested size: 324.21045pt x 218.81696pt.
+)
+Underfull \hbox (badness 10000) has occurred while \output is active
+
+ []
+
+[1
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/upd
+map/pdftex.map}
+Non-PDF special ignored!
+Non-PDF special ignored!
+Non-PDF special ignored!] [2 <./Shapes_Bo2.jpg> <./PV_Bo2.jpg> <./FIGURES/Curva
+ture1_pspdftex.pdf>]
+
+LaTeX Warning: Reference `eq:YL' on page 3 undefined on input line 286.
+
+[3]
+Overfull \hbox (21.26918pt too wide) detected at line 350
+[][]
+ []
+
+[4] [5] [6] (./Curvature2.pspdftex
+<./FIGURES/Curvature2_pspdftex.pdf, id=56, 165.61874pt x 177.66376pt>
+File: ./FIGURES/Curvature2_pspdftex.pdf Graphic file (type pdf)
+
+<use ./FIGURES/Curvature2_pspdftex.pdf>
+Package pdftex.def Info: ./FIGURES/Curvature2_pspdftex.pdf used on input line 2
+.
+(pdftex.def)             Requested size: 165.61833pt x 177.66331pt.
+)
+
+LaTeX Warning: Reference `fig:dV' on page 7 undefined on input line 509.
+
+[7 <./FIGURES/Curvature2_pspdftex.pdf>] [8] [9]
+Package epstopdf Info: Source file: <./FIGURES/Pending_Shapes.eps>
+(epstopdf)                    date: 2014-12-15 16:38:16
+(epstopdf)                    size: 48498 bytes
+(epstopdf)             Output file: <./FIGURES/Pending_Shapes-eps-converted-to.
+pdf>
+(epstopdf)                    date: 2014-12-15 16:38:21
+(epstopdf)                    size: 17639 bytes
+(epstopdf)             Command: <epstopdf --outfile=./FIGURES/Pending_Shapes-ep
+s-converted-to.pdf ./FIGURES/Pending_Shapes.eps>
+(epstopdf)             \includegraphics on input line 717.
+Package epstopdf Info: Output file is already uptodate.
+
+<./FIGURES/Pending_Shapes-eps-converted-to.pdf, id=69, 552.0625pt x 592.2125pt>
+File: ./FIGURES/Pending_Shapes-eps-converted-to.pdf Graphic file (type pdf)
+<use ./FIGURES/Pending_Shapes-eps-converted-to.pdf>
+Package pdftex.def Info: ./FIGURES/Pending_Shapes-eps-converted-to.pdf used on 
+input line 717.
+(pdftex.def)             Requested size: 230.40234pt x 247.16425pt.
+Package epstopdf Info: Source file: <./FIGURES/Pending_PV.eps>
+(epstopdf)                    date: 2014-12-15 16:38:16
+(epstopdf)                    size: 39382 bytes
+(epstopdf)             Output file: <./FIGURES/Pending_PV-eps-converted-to.pdf>
+
+(epstopdf)                    date: 2014-12-15 16:38:21
+(epstopdf)                    size: 12627 bytes
+(epstopdf)             Command: <epstopdf --outfile=./FIGURES/Pending_PV-eps-co
+nverted-to.pdf ./FIGURES/Pending_PV.eps>
+(epstopdf)             \includegraphics on input line 729.
+Package epstopdf Info: Output file is already uptodate.
+
+<./FIGURES/Pending_PV-eps-converted-to.pdf, id=70, 556.0775pt x 264.99pt>
+File: ./FIGURES/Pending_PV-eps-converted-to.pdf Graphic file (type pdf)
+
+<use ./FIGURES/Pending_PV-eps-converted-to.pdf>
+Package pdftex.def Info: ./FIGURES/Pending_PV-eps-converted-to.pdf used on inpu
+t line 729.
+(pdftex.def)             Requested size: 384.0pt x 182.99289pt.
+Package epstopdf Info: Source file: <./FIGURES/Pending_BoV.eps>
+(epstopdf)                    date: 2014-12-15 16:38:16
+(epstopdf)                    size: 17241 bytes
+(epstopdf)             Output file: <./FIGURES/Pending_BoV-eps-converted-to.pdf
+>
+(epstopdf)                    date: 2014-12-15 16:38:22
+(epstopdf)                    size: 5939 bytes
+(epstopdf)             Command: <epstopdf --outfile=./FIGURES/Pending_BoV-eps-c
+onverted-to.pdf ./FIGURES/Pending_BoV.eps>
+(epstopdf)             \includegraphics on input line 741.
+Package epstopdf Info: Output file is already uptodate.
+
+<./FIGURES/Pending_BoV-eps-converted-to.pdf, id=71, 562.1pt x 421.575pt>
+File: ./FIGURES/Pending_BoV-eps-converted-to.pdf Graphic file (type pdf)
+
+<use ./FIGURES/Pending_BoV-eps-converted-to.pdf>
+Package pdftex.def Info: ./FIGURES/Pending_BoV-eps-converted-to.pdf used on inp
+ut line 741.
+(pdftex.def)             Requested size: 184.31836pt x 138.23889pt.
+Package epstopdf Info: Source file: <./FIGURES/Pending_BoP.eps>
+(epstopdf)                    date: 2014-12-15 16:38:16
+(epstopdf)                    size: 14746 bytes
+(epstopdf)             Output file: <./FIGURES/Pending_BoP-eps-converted-to.pdf
+>
+(epstopdf)                    date: 2014-12-15 16:38:22
+(epstopdf)                    size: 5562 bytes
+(epstopdf)             Command: <epstopdf --outfile=./FIGURES/Pending_BoP-eps-c
+onverted-to.pdf ./FIGURES/Pending_BoP.eps>
+(epstopdf)             \includegraphics on input line 742.
+Package epstopdf Info: Output file is already uptodate.
+
+<./FIGURES/Pending_BoP-eps-converted-to.pdf, id=72, 562.1pt x 421.575pt>
+File: ./FIGURES/Pending_BoP-eps-converted-to.pdf Graphic file (type pdf)
+
+<use ./FIGURES/Pending_BoP-eps-converted-to.pdf>
+Package pdftex.def Info: ./FIGURES/Pending_BoP-eps-converted-to.pdf used on inp
+ut line 742.
+(pdftex.def)             Requested size: 184.31836pt x 138.23889pt.
+
+Underfull \vbox (badness 2547) has occurred while \output is active []
+
+ [10 <./FIGURES/Pending_Shapes-eps-converted-to.pdf>]
+Package epstopdf Info: Source file: <./FIGURES/Oblique.eps>
+(epstopdf)                    date: 2016-03-11 16:00:08
+(epstopdf)                    size: 42576 bytes
+(epstopdf)             Output file: <./FIGURES/Oblique-eps-converted-to.pdf>
+(epstopdf)                    date: 2016-03-11 16:08:03
+(epstopdf)                    size: 9500 bytes
+(epstopdf)             Command: <epstopdf --outfile=./FIGURES/Oblique-eps-conve
+rted-to.pdf ./FIGURES/Oblique.eps>
+(epstopdf)             \includegraphics on input line 777.
+Package epstopdf Info: Output file is already uptodate.
+
+<./FIGURES/Oblique-eps-converted-to.pdf, id=82, 432.61626pt x 594.22pt>
+File: ./FIGURES/Oblique-eps-converted-to.pdf Graphic file (type pdf)
+
+<use ./FIGURES/Oblique-eps-converted-to.pdf>
+Package pdftex.def Info: ./FIGURES/Oblique-eps-converted-to.pdf used on input l
+ine 777.
+(pdftex.def)             Requested size: 192.0pt x 263.72437pt.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 787.
+
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/t1cmtt.fd
+File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+) [11 <./FIGURES/Pending_PV-eps-converted-to.pdf> <./FIGURES/Pending_BoV-eps-co
+nverted-to.pdf> <./FIGURES/Pending_BoP-eps-converted-to.pdf>]
+Overfull \hbox (13.86206pt too wide) in paragraph at lines 821--822
+[]\T1/cmr/m/n/10 Once the ra-tio $\OML/cmm/m/it/10 L=a$\T1/cmr/m/n/10 is fixed,
+ the equi-lib-rium shapes form a fam-ily which can be parametrized
+ []
+
+[12 <./FIGURES/Oblique-eps-converted-to.pdf>]
+<./FIGURES/PV_Bridge_L1_3.pdf, id=110, 597.23125pt x 845.1575pt>
+File: ./FIGURES/PV_Bridge_L1_3.pdf Graphic file (type pdf)
+
+<use ./FIGURES/PV_Bridge_L1_3.pdf>
+Package pdftex.def Info: ./FIGURES/PV_Bridge_L1_3.pdf used on input line 843.
+(pdftex.def)             Requested size: 172.79883pt x 244.53487pt.
+
+<./FIGURES/PV_Bridge_L2.pdf, id=111, 597.23125pt x 845.1575pt>
+File: ./FIGURES/PV_Bridge_L2.pdf Graphic file (type pdf)
+
+<use ./FIGURES/PV_Bridge_L2.pdf>
+Package pdftex.def Info: ./FIGURES/PV_Bridge_L2.pdf used on input line 844.
+(pdftex.def)             Requested size: 172.79883pt x 244.53487pt.
+
+<./FIGURES/PV_Bridge_L4.pdf, id=112, 597.23125pt x 845.1575pt>
+File: ./FIGURES/PV_Bridge_L4.pdf Graphic file (type pdf)
+
+<use ./FIGURES/PV_Bridge_L4.pdf>
+Package pdftex.def Info: ./FIGURES/PV_Bridge_L4.pdf used on input line 846.
+(pdftex.def)             Requested size: 172.79883pt x 244.53487pt.
+
+<./FIGURES/PV_Bridge_L8.pdf, id=113, 597.23125pt x 845.1575pt>
+File: ./FIGURES/PV_Bridge_L8.pdf Graphic file (type pdf)
+
+<use ./FIGURES/PV_Bridge_L8.pdf>
+Package pdftex.def Info: ./FIGURES/PV_Bridge_L8.pdf used on input line 847.
+(pdftex.def)             Requested size: 172.79883pt x 244.53487pt.
+Package epstopdf Info: Source file: <./FIGURES/Bridges_Shapes.eps>
+(epstopdf)                    date: 2014-12-15 22:11:07
+(epstopdf)                    size: 157167 bytes
+(epstopdf)             Output file: <./FIGURES/Bridges_Shapes-eps-converted-to.
+pdf>
+(epstopdf)                    date: 2014-12-15 22:11:11
+(epstopdf)                    size: 55772 bytes
+(epstopdf)             Command: <epstopdf --outfile=./FIGURES/Bridges_Shapes-ep
+s-converted-to.pdf ./FIGURES/Bridges_Shapes.eps>
+(epstopdf)             \includegraphics on input line 855.
+Package epstopdf Info: Output file is already uptodate.
+
+<./FIGURES/Bridges_Shapes-eps-converted-to.pdf, id=114, 572.1375pt x 511.9125pt
+>
+File: ./FIGURES/Bridges_Shapes-eps-converted-to.pdf Graphic file (type pdf)
+ <use ./FIGURES/Bridges_Shapes-eps-converted-to.pdf>
+Package pdftex.def Info: ./FIGURES/Bridges_Shapes-eps-converted-to.pdf used on 
+input line 855.
+(pdftex.def)             Requested size: 307.20117pt x 274.86641pt.
+ [13] [14 <./FIGURES/PV_Bridge_L1_3.pdf> <./FIGURES/PV_Bridge_L2.pdf> <./FIGURE
+S/PV_Bridge_L4.pdf> <./FIGURES/PV_Bridge_L8.pdf>] [15 <./FIGURES/Bridges_Shapes
+-eps-converted-to.pdf>]
+(./JFM_Menisci.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 9684 strings out of 493089
+ 165141 string characters out of 6134842
+ 225988 words of memory out of 5000000
+ 12992 multiletter control sequences out of 15000+600000
+ 21321 words of font info for 60 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 42i,12n,40p,785b,370s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx6.pfb></u
+sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx7.pfb></usr
+/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/l
+ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/lo
+cal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/loc
+al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local
+/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/t
+exlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/tex
+live/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texli
+ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive
+/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/20
+15/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2015/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2015/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2015/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2015/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2015/texmf-dis
+t/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2015/texmf
+-dist/fonts/type1/public/cm-super/sfbx1000.pfb></usr/local/texlive/2015/texmf-d
+ist/fonts/type1/public/cm-super/sfbx1095.pfb></usr/local/texlive/2015/texmf-dis
+t/fonts/type1/public/cm-super/sfbx1728.pfb></usr/local/texlive/2015/texmf-dist/
+fonts/type1/public/cm-super/sfcc0900.pfb></usr/local/texlive/2015/texmf-dist/fo
+nts/type1/public/cm-super/sfcc1000.pfb></usr/local/texlive/2015/texmf-dist/font
+s/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2015/texmf-dist/fonts/
+type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2015/texmf-dist/fonts/ty
+pe1/public/cm-super/sfrm1000.pfb></usr/local/texlive/2015/texmf-dist/fonts/type
+1/public/cm-super/sfti0800.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/
+public/cm-super/sfti1000.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pu
+blic/cm-super/sftt1000.pfb>
+Output written on JFM_Menisci.pdf (15 pages, 563660 bytes).
+PDF statistics:
+ 235 PDF objects out of 1000 (max. 8388607)
+ 166 compressed objects within 2 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 71 words of extra memory for PDF output out of 10000 (max. 10000000)
+

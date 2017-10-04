@@ -1,0 +1,15 @@
+\contentsline {section}{\numberline {1.}Noncylindrical Bridges}{1}
+\contentsline {subsection}{\numberline {1.1.}Equilibrium shapes}{1}
+\contentsline {subsection}{\numberline {1.2.}Frequency calculations}{3}
+\contentsline {section}{Appendix\nobreakspace {}A}{5}
+\contentsline {subsection}{\numberline {A.1.}Problem formulation}{5}
+\contentsline {subsection}{\numberline {A.2.}Analytical solution}{5}
+\contentsline {subsection}{\numberline {A.3.}Details}{7}
+\contentsline {section}{Appendix\nobreakspace {}B}{8}
+\contentsline {subsection}{\numberline {B.1.}Formules de base}{8}
+\contentsline {subsection}{\numberline {B.2.}Courbure de la forme moyenne}{9}
+\contentsline {section}{Appendix\nobreakspace {}C}{10}
+\contentsline {subsection}{\numberline {C.1.}Cas particulier : forme moyenne sphérique}{11}
+\contentsline {subsection}{\numberline {C.2.}Paramétrage selon $r$}{11}
+\contentsline {subsection}{\numberline {C.3.}Calcul de la forme d'équilibre par méthode de Newton}{12}
+\contentsline {subsection}{\numberline {C.4.}Implémentation avec Freefem}{12}

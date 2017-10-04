@@ -1,0 +1,164 @@
+//COMPUTE STILL CYLINDER WITH GRAVITY
+//real R=0.003;  
+//real T=0.07; //tension de surface
+real R=1.0;  
+real T=1.0; 
+//real H=0.5;        
+//int n1=25;
+//real g=1;
+//int m=1;
+//////BORDERS////////////////////////////////////////////////////
+//border interface(t=R,0){x=t ; y=H ; label=1;}
+//border axe(t=H,0){x=0 ; y=t ; label=2;}
+//border fond(t=0,R){ x=t ; y=0 ; label=3;} 
+//border bord(t=0,H){x=R ; y=t ; label=4;}
+
+real theta0 = acos(0.5);//acos((525+70*30^0.5)^0.5/35);//acos(sqrt(3/5.)); // position de la contrainte6.611429;
+real dtheta = 1e-4; // largeur de l'intervalle de contrainte8.486932
+cout << "THETA0 : " << theta0 << " ; cos(THETA0) = "<<  cos(theta0) << endl;
+
+
+border Sl1(t=pi,theta0+dtheta/2) { x=R*sin(t); y=R*cos(t); label=1; }
+border Sc(t=theta0+dtheta/2,theta0-dtheta/2) { x=R*sin(t); y=R*cos(t); label=3; }
+border Sl2(t=theta0-dtheta/2,0) { x=R*sin(t); y=R*cos(t); label=1; }
+
+
+border axe(t=R,-R) { x=0; y=t; label=2; }
+//////CREATE MESH/////////////////////////
+//mesh Th = buildmesh(interface(2*n1)+axe(n1)+fond(2*n1)+bord(n1));
+int n=50;
+real epsilon = 1e-7;
+
+mesh Th = buildmesh( Sl1((pi-theta0)*n)+Sc(1) +Sl2(theta0*n)  +axe(2*n) );
+savemesh(Th,"mesh.msh");
+plot(Th,wait=1);
+
+
+
+
+
+
+fespace Xh(Th,P2);
+fespace Mh(Th,P1);
+fespace XhxMhxMh(Th,[P2,P1,P1]);
+Xh<complex> [phi];
+Mh<complex> [p];
+Mh<complex> [eta];
+/////////////////////////////////////////////////////////////////                
+
+varf a([phi,p,eta],[v,q,h]) =
+//LAPLACIEN
+int2d(Th)(dx(phi)*dx(v)*x+dy(phi)*dy(v)*x)    
+//TERME DE PRESSION
+- int2d(Th)(p*q*x)
+//TERME DE COURBURE
+- int1d(Th,1)(p*h*x)
+//TENSION DE SURFACE 
+- int1d(Th,1)( T/R^2*2*eta*h*x) 
++ int1d(Th,1)( T*(dx(eta)*N.y-dy(eta)*N.x)*(dx(h)*N.y-dy(h)*N.x)*x )
+//TERMES DE PENALISATION
+//+ int2d(Th)( phi*v*1e-15 )
+//+ int2d(Th)( p*q*1e-15   )
+  + int2d(Th)( eta*h*epsilon  )
+  + on(3,eta=0);
+
+varf b([phi,p,eta],[v,q,h]) = int2d(Th)(phi*q*x) + int1d(Th,1)(eta*v*x);// + int2d(Th)(p*h*x*(1e-10));
+
+matrix<complex> A = a(XhxMhxMh,XhxMhxMh,tgv=1e30);
+matrix<complex> B = b(XhxMhxMh,XhxMhxMh,tgv=1e30);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////// SLPC /////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	{
+	ofstream file("ffmatA.txt");
+	file.precision(16);
+	file.scientific; 
+	file << A << endl;
+	};
+//////////Construction du format i, j, real(a_ij), imag(a_ij) : matrice A//////////////////////////////////////////////////
+	string ss1;
+	complex aa;
+	ifstream fileA("ffmatA.txt");
+	int Na, Nnz, sy,i,j;
+	int[int] IIA(1),JJA(1); //the arrays IIA, JJA and AIJ are progressively automatically resized from size=1 to size=non-zeros elements of A
+        complex[int] AIJ(1);
+        [IIA,JJA,AIJ] = A;
+	int Ni= IIA.n;
+	int Nmat = A.n;
+
+	{
+	ofstream filet("matA.txt");
+	filet.precision(16);
+	filet.scientific;
+	filet << "# Sparse Matrix (Morse)"<< endl;
+	filet << "# first line: n m (is symmetic) nbcoef" << endl;
+	filet << "# after for each nonzero coefficient:   i j a_ij where (i,j) \in  {1,...,n}x{1,...,m}" << endl;
+
+	fileA >> ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1;
+	//cout << "s = "<< ss1<<endl;
+	fileA >> Na ;
+	fileA >>  Na ;
+	fileA >> sy ;
+	//cout << "issym = "<< sy<<endl;
+	fileA >> Nnz;
+	cout << "Nbcoef = "<< Nnz<<endl;
+	filet << Nmat <<" " << Nmat << " " << sy << " " << Ni << endl;
+        for (int i=0;i<Ni;++i)
+           {filet << IIA(i)+1 << " " << JJA(i)+1 << " " << real(AIJ(i)) << " " <<imag(AIJ(i)) << endl;
+        }
+        
+	};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	{
+	ofstream file("ffmatB.txt");
+	file.precision(16);
+	file.scientific;
+	file << B << endl;
+	};
+/////////////////////Construction du format i, j, real(b_ij), imag(b_ij) : matrice directe///////////////////////////////////////	
+	ifstream fileB("ffmatB.txt");
+	int[int] IIB(1),JJB(1);
+        complex[int] BIJ(1);
+        [IIB,JJB,BIJ] = B;
+        Ni= IIB.n;
+        Nmat = B.n;
+
+	{
+	ofstream filet2("matB.txt");
+	filet2.precision(16);
+        filet2.scientific;
+	filet2 << "# Sparse Matrix (Morse)"<< endl;
+	filet2 << "# first line: n m (is symmetic) nbcoef" << endl;
+	filet2 << "# after for each nonzero coefficient:   i j a_ij where (i,j) \in  {1,...,n}x{1,...,m}" << endl;
+
+	fileB >> ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1;
+	//cout << "s = "<< ss1<<endl;
+	fileB >> Na ;
+	fileB >>  Na ;
+	fileB >> sy ;
+	//cout << "issym = "<< sy<<endl;
+	fileB >> Nnz;
+	cout << "Nbcoef = "<< Nnz<<endl;
+	filet2 << Nmat <<" " << Nmat << " " << sy << " " << Ni << endl;
+        for (int i=0;i<Ni;++i)
+           {filet2 << IIB(i)+1 << " " << JJB(i)+1 << " " <<real(BIJ(i)) << " " <<imag(BIJ(i))  << endl;
+        }
+	};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	cout << "Traduction des fichiers au format PetsC ...." << endl;
+	exec ("./ff2petsc_complex -sr 0.0 -si 1.0 > OUT"); 
+	cout << "Resolution par Slepc ...." << endl;
+	string AA="./eigenpb_complex_jerome  -dir -Fr "+cos(theta0)+" -sr 0.0 -si 1.0 -nval 10 -nvec 10";
+	exec(AA);
+	exec("cat eigenvalues.dat >> EigenValue_mu.dat");
+	
+      //  cout << " VALEURS THEORIQUES : FREQUENCES DE RAYLEIGH" << endl;
+//	for(int l = 0; l<5;l++)
+//	{
+//	  cout << " l = " << l << "  :  Omega = " << sqrt(l*(l-1)*(l+2)) << endl;
+//	}
+	
+	
+	cout << "That's all folks!!!" << endl;
+	

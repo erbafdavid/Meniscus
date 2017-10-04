@@ -1,0 +1,25 @@
+V 1.0 juillet 2013 ; marche presque puis abandonnÈ
+V 1.1 18 dec 2013 reprise ; correction petit bug 
+
+V 1.2 19 dec 2013
+=> Parametres globaux
+=> Simplification de l'interface des routines : [R,Z,P,V] pour tout le monde
+marche bien, sauf loop_V au voisinage des points de pression minimale
+(formation d'un col)
+
+V 1.3 16 janvier 2014
+changement de nom : MeniscusContinuation au lieu de PendingDrop_Equilibria_Matlab
+=> valide dans les cas suivants :
+- Ponts liquides
+- Goutes pendantes : problemes bizares de non convergence sur certaines portions des courbes
+NewtonP veut pas marcher au voisinage du point ou la goute s'invagine
+Les deux plantent au deuxieme demi tour (minimum de P)
+ 
+V 1.4 dÈcembre 2014
+- RajoutÈ formulation Finite Elements + Finite Differences
+- Exploration des formes de ponts liquides (branches asymetriques et a deux cols, ...)
+- ImplÈmentÈ le cas angle de contact imposÈ (en diff. finies)
+- rajoutÈ le cas 2D (en diff. finies)
+- rajouté les VP. dans le cas m=1 (point de bifurcation asymétrique)
+- Problème des matrices qui devient singulières réglé ! (le signe du terme dpdz cos alpha eta était faux…) => ça marche pour les ponts et les gouttes à R fixé, pas tout à fait dans le cas a angle de contact fixé.
+

@@ -1,0 +1,289 @@
+//COMPUTE STILL CYLINDER WITH GRAVITY
+real R=1.0;  
+real T=1.0;
+real RMAX = 5.0;
+real dex=1.0;
+real din=0.8;
+//////BORDERS////////////////////////////////////////////////////
+border Sl(t=0,pi) { x=R*sin(t); y=R*cos(t); label=1; }
+border Sl4(t=pi,0) { x=RMAX*sin(t); y=RMAX*cos(t); label=4; }
+border axe1(t=RMAX,R) { x=0; y=t; label=2; }
+border axe2(t=-R,-RMAX) { x=0; y=t; label=2; }
+
+border Sl11(t=pi,0) { x=R*sin(t); y=R*cos(t); label=11; }
+border axe22(t=R,-R) { x=0; y=t; label=22; }
+//////CREATE MESH/////////////////////////
+int n=80;
+real epsilon = 1e-7;
+
+mesh Thex = buildmesh( Sl(pi*n) +axe1((RMAX-R)*n/2) +axe2((RMAX-R)*n/2) +Sl4(RMAX*pi*n/5) ,  fixeborder=true);
+mesh Thin = buildmesh( Sl11(pi*n) +axe22(2*R*n) ,  fixeborder=true);
+
+mesh ThE = emptymesh(Thin);
+
+//plot(Thex,Thin,wait=1);
+
+// espaces EF sur le domaine exterieur
+fespace Xhex(Thex,P2);
+fespace Mhex(Thex,P1);
+Xhex<complex> [phiex];
+Mhex<complex> [pex];
+
+// espaces EF sur le domaine interieur
+fespace Xhin(Thin,P2);
+fespace Mhin(Thin,P1);
+Xhin<complex> [phiin];
+Mhin<complex> [pin];
+
+fespace MhE(ThE,P1);
+MhE<complex> [eta];
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+/*varf a11(phi,v) = int2d(Th)(dx(phi)*dx(v)*x+dy(phi)*dy(v)*x);
+varf a12(p,v) = int2d(Th)(0.*p*v);
+varf a13(eta,v) = int1d(Th,1)(0.*eta*v);
+varf a21(phi,q) = int2d(Th)(0.*phi*q);
+varf a22(p,q) = - int2d(Th)(p*q*x);
+varf a23(eta,q) = int1d(ThE,1)(0.*eta*q);
+varf a31(phi,h) = int1d(ThE,1)(0.*phi*h);
+varf a32(p,h) = - int1d(ThE,1)(p*h*x);
+varf a33(eta,h) = - int1d(ThE,1)( T/R^2*2*eta*h*x) 
+                  + int1d(ThE,1)( T*(dx(eta)*N.y-dy(eta)*N.x)*(dx(h)*N.y-dy(h)*N.x)*x )
+		  + int2d(ThE)( eta*h*1e-7 );
+matrix<complex>*/
+
+varf a11(phiex,vex) = int2d(Thex)(dx(phiex)*dx(vex)*x+dy(phiex)*dy(vex)*x);
+varf a12(pex,vex) = int2d(Thex)(0.*pex*vex);
+varf a13(phiin,vex) = int2d(Thin)(0.*phiin*vex);
+varf a14(pin,vex) = int2d(Thin)(0.*pin*vex);
+varf a15(eta,vex) = int1d(ThE,11)(0.*eta*vex);
+
+varf a21(phiex,qex) = int2d(Thex)(0.*phiex*qex);
+varf a22(pex,qex) = - int2d(Thex)(pex*qex*x);
+varf a23(phiin,qex) = int2d(Thin)(0.*phiin*qex);
+varf a24(pin,qex) = int2d(Thin)(0.*pin*qex);
+varf a25(eta,qex) = int1d(ThE,11)(0.*eta*qex);
+
+varf a31(phiex,vin) = int2d(Thex)(0.*phiex*vin);
+varf a32(pex,vin) = int2d(Thex)(0.*pex*vin);
+varf a33(phiin,vin) = int2d(Thin)(dx(phiin)*dx(vin)*x+dy(phiin)*dy(vin)*x);
+varf a34(pin,vin) = int2d(Thin)(0.*pin*vin);
+varf a35(eta,vin) = int1d(ThE,11)(0.*eta*vin);
+
+varf a41(phiex,qin) = int2d(Thex)(0.*phiex*qin);
+varf a42(pex,qin) = int2d(Thex)(0.*pex*qin);
+varf a43(phiin,qin) = int2d(Thin)(0.*phiin*qin);
+varf a44(pin,qin) = - int2d(Thin)(pin*qin*x);
+varf a45(eta,qin) = int1d(ThE,11)(0.*eta*qin);
+
+varf a51(phiex,h) = int1d(ThE,11)(0.*phiex*h);
+varf a52(pex,h) =  - int1d(ThE,11)(pex*h*x);
+varf a53(phiin,h) = int1d(ThE,11)(0.*phiin*h);
+varf a54(pin,h) =  - int1d(ThE,11)(pin*h*x);
+varf a55(eta,h) = - int1d(ThE,11)( T/R^2*2*eta*h*x)
+                  + int1d(ThE,11)( T*(dx(eta)*N.y-dy(eta)*N.x)*(dx(h)*N.y-dy(h)*N.x)*x )
+                  + int2d(ThE)( eta*h*epsilon );
+
+matrix<complex> A11 = a11(Xhex,Xhex,tgv=1e30);
+matrix<complex> A12 = a12(Mhex,Xhex,tgv=1e30);
+matrix<complex> A13 = a13(Xhin,Xhex,tgv=1e30);
+matrix<complex> A14 = a14(Mhin,Xhex,tgv=1e30);
+matrix<complex> A15 = a15(MhE,Xhex,tgv=1e30);
+
+matrix<complex> A21 = a21(Xhex,Mhex,tgv=1e30);
+matrix<complex> A22 = a22(Mhex,Mhex,tgv=1e30);
+matrix<complex> A23 = a23(Xhin,Mhex,tgv=1e30);
+matrix<complex> A24 = a24(Mhin,Mhex,tgv=1e30);
+matrix<complex> A25 = a25(MhE,Mhex,tgv=1e30);
+
+matrix<complex> A31 = a31(Xhex,Xhin,tgv=1e30);
+matrix<complex> A32 = a32(Mhex,Xhin,tgv=1e30);
+matrix<complex> A33 = a33(Xhin,Xhin,tgv=1e30);
+matrix<complex> A34 = a34(Mhin,Xhin,tgv=1e30);
+matrix<complex> A35 = a35(MhE,Xhin,tgv=1e30);
+
+matrix<complex> A41 = a41(Xhex,Mhin,tgv=1e30);
+matrix<complex> A42 = a42(Mhex,Mhin,tgv=1e30);
+matrix<complex> A43 = a43(Xhin,Mhin,tgv=1e30);
+matrix<complex> A44 = a44(Mhin,Mhin,tgv=1e30);
+matrix<complex> A45 = a45(MhE,Mhin,tgv=1e30);
+
+matrix<complex> A51 = a51(Xhex,MhE,tgv=1e30);
+matrix<complex> A52 = a52(Mhex,MhE,tgv=1e30);
+matrix<complex> A53 = a53(Xhin,MhE,tgv=1e30);
+matrix<complex> A54 = a54(Mhin,MhE,tgv=1e30);
+matrix<complex> A55 = a55(MhE,MhE,tgv=1e30);
+
+matrix<complex> A = [ [A11,A12,A13,A14,A15], [A21,A22,A23,A24,A25], [A31,A32,A33,A34,A35], [A41,A42,A43,A44,A45], [A51,A52,A53,A54,A55]];
+
+
+/*varf b11(phi,v) = int2d(Th)(phi*v*0);
+varf b12(p,v) = int2d(Th)(0.*p*v);
+varf b13(eta,v) = int1d(Th,1)(eta*v*x);
+varf b21(phi,q) = int2d(Th)(phi*q*x);
+varf b22(p,q) =  int2d(Th)(p*q*0);
+varf b23(eta,q) = int1d(ThE,1)(0.*eta*q);
+varf b31(phi,h) = int1d(ThE,1)(0.*phi*h);
+varf b32(p,h) =  int1d(ThE,1)(0.*p*h);
+varf b33(eta,h) = int1d(ThE,1)(eta*h*0);
+matrix<complex>*/
+
+varf b11(phiex,vex) = int2d(Thex)(epsilon*phiex*vex);
+varf b12(pex,vex) = int2d(Thex)(0.*pex*vex);
+varf b13(phiin,vex) = int2d(Thin)(0.*phiin*vex);
+varf b14(pin,vex) = int2d(Thin)(0.*pin*vex);
+varf b15(eta,vex) = int1d(ThE,11)(eta*vex*x);
+
+varf b21(phiex,qex) = int2d(Thex)(phiex*qex*x*dex);
+varf b22(pex,qex) = int2d(Thex)(epsilon*pex*qex);
+varf b23(phiin,qex) = int2d(Thin)(0.*phiin*qex);
+varf b24(pin,qex) = int2d(Thin)(0.*pin*qex);
+varf b25(eta,qex) = int1d(ThE,11)(0.*eta*qex);
+
+varf b31(phiex,vin) = int2d(Thex)(0.*phiex*vin);
+varf b32(pex,vin) = int2d(Thex)(0.*pex*vin);
+varf b33(phiin,vin) = int2d(Thin)(epsilon*phiin*vin);
+varf b34(pin,vin) = int2d(Thin)(0.*pin*vin);
+varf b35(eta,vin) = int1d(ThE,11)(eta*vin*x);
+
+varf b41(phiex,qin) = int2d(Thex)(0.*phiex*qin);
+varf b42(pex,qin) = int2d(Thex)(0.*pex*qin);
+varf b43(phiin,qin) = int2d(Thin)(phiin*qin*x*din);
+varf b44(pin,qin) = int2d(Thin)(epsilon*pin*qin);
+varf b45(eta,qin) = int1d(ThE,11)(0.*eta*qin);
+
+varf b51(phiex,h) = int2d(Thex)(0.*phiex*h);
+varf b52(pex,h) = int2d(Thex)(0.*pex*h);
+varf b53(phiin,h) = int2d(Thin)(0.*phiin*h);
+varf b54(pin,h) = int2d(Thin)(0.*pin*h);
+varf b55(eta,h) = int1d(ThE,11)(epsilon*eta*h);
+
+matrix<complex> B11 = b11(Xhex,Xhex,tgv=1e30);
+matrix<complex> B12 = b12(Mhex,Xhex,tgv=1e30);
+matrix<complex> B13 = b13(Xhin,Xhex,tgv=1e30);
+matrix<complex> B14 = b14(Mhin,Xhex,tgv=1e30);
+matrix<complex> B15 = b15(MhE,Xhex,tgv=1e30);
+
+matrix<complex> B21 = b21(Xhex,Mhex,tgv=1e30);
+matrix<complex> B22 = b22(Mhex,Mhex,tgv=1e30);
+matrix<complex> B23 = b23(Xhin,Mhex,tgv=1e30);
+matrix<complex> B24 = b24(Mhin,Mhex,tgv=1e30);
+matrix<complex> B25 = b25(MhE,Mhex,tgv=1e30);
+
+matrix<complex> B31 = b31(Xhex,Xhin,tgv=1e30);
+matrix<complex> B32 = b32(Mhex,Xhin,tgv=1e30);
+matrix<complex> B33 = b33(Xhin,Xhin,tgv=1e30);
+matrix<complex> B34 = b34(Mhin,Xhin,tgv=1e30);
+matrix<complex> B35 = b35(MhE,Xhin,tgv=1e30);
+
+matrix<complex> B41 = b41(Xhex,Mhin,tgv=1e30);
+matrix<complex> B42 = b42(Mhex,Mhin,tgv=1e30);
+matrix<complex> B43 = b43(Xhin,Mhin,tgv=1e30);
+matrix<complex> B44 = b44(Mhin,Mhin,tgv=1e30);
+matrix<complex> B45 = b45(MhE,Mhin,tgv=1e30);
+
+matrix<complex> B51 = b51(Xhex,MhE,tgv=1e30);
+matrix<complex> B52 = b52(Mhex,MhE,tgv=1e30);
+matrix<complex> B53 = b53(Xhin,MhE,tgv=1e30);
+matrix<complex> B54 = b54(Mhin,MhE,tgv=1e30);
+matrix<complex> B55 = b55(MhE,MhE,tgv=1e30);
+
+matrix<complex> B = [ [B11,B12,B13,B14,B15], [B21,B22,B23,B24,B25], [B31,B32,B33,B34,B35], [B41,B42,B43,B44,B45], [B51,B52,B53,B54,B55]];
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////// SLPC /////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	{
+	ofstream file("ffmatA.txt");
+	file.precision(16);
+	file.scientific; 
+	file << A << endl;
+	};
+//////////Construction du format i, j, real(a_ij), imag(a_ij) : matrice A//////////////////////////////////////////////////
+	string ss1;
+	complex aa;
+	ifstream fileA("ffmatA.txt");
+	int Na, Nnz, sy,i,j;
+	int[int] IIA(1),JJA(1); //the arrays IIA, JJA and AIJ are progressively automatically resized from size=1 to size=non-zeros elements of A
+        complex[int] AIJ(1);
+        [IIA,JJA,AIJ] = A;
+	int Ni= IIA.n;
+	int Nmat = A.n;
+
+	{
+	ofstream filet("matA.txt");
+	filet.precision(16);
+	filet.scientific;
+	filet << "# Sparse Matrix (Morse)"<< endl;
+	filet << "# first line: n m (is symmetic) nbcoef" << endl;
+	filet << "# after for each nonzero coefficient:   i j a_ij where (i,j) \in  {1,...,n}x{1,...,m}" << endl;
+
+	fileA >> ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1;
+	//cout << "s = "<< ss1<<endl;
+	fileA >> Na ;
+	fileA >>  Na ;
+	fileA >> sy ;
+	//cout << "issym = "<< sy<<endl;
+	fileA >> Nnz;
+	cout << "Nbcoef = "<< Nnz<<endl;
+	filet << Nmat <<" " << Nmat << " " << sy << " " << Ni << endl;
+        for (int i=0;i<Ni;++i)
+           {filet << IIA(i)+1 << " " << JJA(i)+1 << " " << real(AIJ(i)) << " " <<imag(AIJ(i)) << endl;
+        }
+        
+	};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	{
+	ofstream file("ffmatB.txt");
+	file.precision(16);
+	file.scientific;
+	file << B << endl;
+	};
+/////////////////////Construction du format i, j, real(b_ij), imag(b_ij) : matrice directe///////////////////////////////////////	
+	ifstream fileB("ffmatB.txt");
+	int[int] IIB(1),JJB(1);
+        complex[int] BIJ(1);
+        [IIB,JJB,BIJ] = B;
+        Ni= IIB.n;
+        Nmat = B.n;
+
+	{
+	ofstream filet2("matB.txt");
+	filet2.precision(16);
+        filet2.scientific;
+	filet2 << "# Sparse Matrix (Morse)"<< endl;
+	filet2 << "# first line: n m (is symmetic) nbcoef" << endl;
+	filet2 << "# after for each nonzero coefficient:   i j a_ij where (i,j) \in  {1,...,n}x{1,...,m}" << endl;
+
+	fileB >> ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1>>ss1;
+	//cout << "s = "<< ss1<<endl;
+	fileB >> Na ;
+	fileB >>  Na ;
+	fileB >> sy ;
+	//cout << "issym = "<< sy<<endl;
+	fileB >> Nnz;
+	cout << "Nbcoef = "<< Nnz<<endl;
+	filet2 << Nmat <<" " << Nmat << " " << sy << " " << Ni << endl;
+        for (int i=0;i<Ni;++i)
+           {filet2 << IIB(i)+1 << " " << JJB(i)+1 << " " <<real(BIJ(i)) << " " <<imag(BIJ(i))  << endl;
+        }
+	};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	cout << "Traduction des fichiers au format PetsC ...." << endl;
+	exec ("./ff2petsc_complex -sr 0.0 -si 1.0 > OUT"); 
+	cout << "Resolution par Slepc ...." << endl;
+	string AA="./eigenpb_complex_jerome  -dir -R "+R+" -sr 0.0 -si 1.0 -nval 10 -nvec 10";
+	exec(AA);
+	exec("cat eigenvalues.dat >> EigenValue_n="+n+".dat");
+	
+        cout << " VALEURS THEORIQUES : FREQUENCES DE RAYLEIGH" << endl;
+	for(int l = 1; l<5;l++)
+	{
+	  cout << " l = " << l << "  :  Omega = " << sqrt( ((l-1)*l*(l+1)*(l+2) )  /   (din*l+din+dex*l)   ) << endl;
+	}
+	
+	
+	cout << "That's all folks!!!" << endl;
+

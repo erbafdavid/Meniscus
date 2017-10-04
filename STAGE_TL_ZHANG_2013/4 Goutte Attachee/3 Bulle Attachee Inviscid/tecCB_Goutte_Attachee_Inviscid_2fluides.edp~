@@ -1,0 +1,113 @@
+		verbosity = 0;
+
+		
+
+
+
+
+
+
+mesh Thin = readmesh("MeshBulle5.msh");
+mesh Thex = readmesh("MeshBulle6.msh");
+mesh ThE=emptymesh(Thin); 
+
+
+fespace Xhex(Thex,P2);
+fespace Mhex(Thex,P1);
+Xhex<complex> [phiex];
+Mhex<complex> [pex];
+
+// espaces EF sur le domaine interieur
+fespace Xhin(Thin,P2);
+fespace Mhin(Thin,P1);
+Xhin<complex> [phiin];
+Mhin<complex> [pin];
+
+fespace MhE(ThE,P1);
+MhE<complex> [eta];
+
+int Nphiex = phiex.n;
+int Npex = pex.n;
+int Nphiin = phiin.n;
+int Npin = pin.n;
+int Neta = eta.n;
+int Ntot = Nphiex+Npex+Nphiin+Npin+Neta;
+
+complex[int] VecteurPropre(Ntot);
+
+
+int N;
+real freqR, freqI;
+
+// Seconde methode : passage du fichier en argument
+// usage : Frefem++ tecCB_Goutte_Attachee_Inviscid.edp < "nom du fichier"	
+        {
+		cin >> VecteurPropre;
+		cin >> N;
+		cin >> freqR;
+		cin >> freqI;
+	}
+
+
+cout << "FREQUENCE DU MODE : " << freqR << " + i " << freqI << endl;
+
+// RENORMALISATION :
+//VecteurPropre = 1/(phiin(0,1))*VecteurPropre; // a verifier
+
+// 
+
+
+
+
+
+phiex[] = VecteurPropre(0:Nphiex-1);
+pex[] = VecteurPropre(Nphiex:Nphiex+Npex-1);
+phiin[] = VecteurPropre(Nphiex+Npex:Nphiex+Npex+Nphiin-1);
+pin[] = VecteurPropre(Nphiex+Npex+Nphiin:Nphiex+Npex+Nphiin+Npin-1);
+eta[] = VecteurPropre(Nphiex+Npex+Nphiin+Npin:Ntot);
+
+
+
+// RENORMALISATION :
+
+Xhin testy = y;
+real[int] testyvecteur = testy[];
+real ztop = testyvecteur.max; // hauteur;
+
+eta = eta/eta(0,ztop);
+phiex=phiex/eta(0,ztop);
+phiin=phiin/eta(0,ztop);
+pex=pex/eta(0,ztop);
+pin=pin/eta(0,ztop);
+
+
+Xhex phiprex,phipiex,uzex,urex;
+phiprex = real(phiex);
+phipiex = imag(phiex);
+	
+uzex=dy(phiprex);
+urex=dx(phiprex);
+
+Xhin phiprin,phipiin,uzin,urin;
+phiprin = real(phiin);
+phipiin = imag(phiin);
+
+uzin=dy(phiprin);	
+urin=dx(phiprin);	
+
+	
+// POUR AFFICHER LES CHAMPS phi et P	
+		
+	plot(phiprex,phiprin,cmm="Eigen  Vector of sloshing problem : real(phi)"  ,wait=1,value=1);
+	plot(phipiex,phipiin,cmm="Eigen  Vector of sloshing problem : imag(phi)"  ,wait=1,value=1);
+
+
+plot(uzex,uzin,cmm="Eigen  Vector of sloshing problem : real(uz)"  ,wait=1,value=1);
+
+
+plot(urex,urin,cmm="Eigen  Vector of sloshing problem : real(ur)"  ,wait=1,value=1);
+
+
+plot([urex,uzex],[urin,uzin],cmm="Eigen  Vector of sloshing problem : real(u)"  ,wait=1,value=1);
+
+

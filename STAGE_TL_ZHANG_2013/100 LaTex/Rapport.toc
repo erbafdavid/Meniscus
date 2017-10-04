@@ -1,0 +1,58 @@
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Contexte g\IeC {\'e}n\IeC {\'e}ral}{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}\IeC {\'E}tude bibliographique}{2}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}Modes d'une goutte libre}{2}{subsection.1.2.1}
+\contentsline {subsection}{\numberline {1.2.2}Modes d'une goutte sph\IeC {\'e}rique avec contrainte}{2}{subsection.1.2.2}
+\contentsline {subsection}{\numberline {1.2.3}Modes d'une goutte attach\IeC {\'e}e \IeC {\`a} un tube capillaire}{3}{subsection.1.2.3}
+\contentsline {section}{\numberline {1.3}But du stage}{4}{section.1.3}
+\contentsline {chapter}{\numberline {2}Goutte ou bulle non visqueux}{5}{chapter.2}
+\contentsline {section}{\numberline {2.1}Position du probl\IeC {\`e}me}{5}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}\IeC {\'E}quations g\IeC {\'e}n\IeC {\'e}rales}{5}{subsection.2.1.1}
+\contentsline {subsection}{\numberline {2.1.2}D\IeC {\'e}composition modale}{6}{subsection.2.1.2}
+\contentsline {subsection}{\numberline {2.1.3}Lin\IeC {\'e}arisation des \IeC {\'e}quations}{7}{subsection.2.1.3}
+\contentsline {section}{\numberline {2.2}Mod\IeC {\'e}lisation num\IeC {\'e}rique}{7}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Formulation variationnelle}{7}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}\IeC {\'E}criture du probl\IeC {\`e}me sous forme matricielle}{8}{subsection.2.2.2}
+\contentsline {section}{\numberline {2.3}Validation du code}{9}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Cas d'une goutte sans contrainte}{9}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2}Cas d'une goutte avec contrainte}{11}{subsection.2.3.2}
+\contentsline {subsection}{\numberline {2.3.3}Cas d'une bulle sans contrainte}{17}{subsection.2.3.3}
+\contentsline {subsection}{\numberline {2.3.4}Cas d'une bulle avec contrainte}{18}{subsection.2.3.4}
+\contentsline {chapter}{\numberline {3}Une gouttelette de liquide immerg\IeC {\'e}e dans un autre fluide non visqueux}{19}{chapter.3}
+\contentsline {section}{\numberline {3.1}Position du probl\IeC {\`e}me}{19}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}\IeC {\'E}tude du champ de base}{19}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}\IeC {\'E}quations g\IeC {\'e}n\IeC {\'e}rales}{20}{subsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1.3}D\IeC {\'e}composition modale}{20}{subsection.3.1.3}
+\contentsline {subsection}{\numberline {3.1.4}Lin\IeC {\'e}arisation des \IeC {\'e}quations}{20}{subsection.3.1.4}
+\contentsline {section}{\numberline {3.2}Mod\IeC {\'e}lisation num\IeC {\'e}rique}{21}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Formulation variationnelle}{21}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}\IeC {\'E}criture du probl\IeC {\`e}me sous forme matricielle}{22}{subsection.3.2.2}
+\contentsline {section}{\numberline {3.3}Validation du code}{23}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Cas sans contrainte}{23}{subsection.3.3.1}
+\contentsline {subsubsection}{Dans les cas $2a = d = 4.19 mm :$}{23}{section*.2}
+\contentsline {subsubsection}{Dans les cas $2a = d = 4.48 mm :$}{23}{section*.3}
+\contentsline {subsection}{\numberline {3.3.2}Cas avec contrainte}{25}{subsection.3.3.2}
+\contentsline {subsubsection}{Dans les cas $2a = d = 4.19 mm :$}{25}{section*.4}
+\contentsline {subsubsection}{Dans les cas $2a = d = 4.48 mm :$}{26}{section*.5}
+\contentsline {chapter}{\numberline {4}Une goutte attach\IeC {\'e}e \IeC {\`a} un tube capillaire non visqueux}{27}{chapter.4}
+\contentsline {section}{\numberline {4.1}Position du probl\IeC {\`e}me}{28}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}\IeC {\'E}tude du champ de base}{28}{subsection.4.1.1}
+\contentsline {subsection}{\numberline {4.1.2}\IeC {\'E}quations g\IeC {\'e}n\IeC {\'e}rales}{29}{subsection.4.1.2}
+\contentsline {subsection}{\numberline {4.1.3}D\IeC {\'e}composition modale}{30}{subsection.4.1.3}
+\contentsline {subsection}{\numberline {4.1.4}Lin\IeC {\'e}arisation des \IeC {\'e}quations}{31}{subsection.4.1.4}
+\contentsline {section}{\numberline {4.2}Mod\IeC {\'e}lisation num\IeC {\'e}rique}{32}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Formulation variationnelle}{32}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}\IeC {\'E}criture du probl\IeC {\`e}me sous forme matricielle}{32}{subsection.4.2.2}
+\contentsline {section}{\numberline {4.3}Validation du code}{33}{section.4.3}
+\contentsline {subsection}{\numberline {4.3.1}Dans les cas $2a = d = 4.19 mm :$}{33}{subsection.4.3.1}
+\contentsline {subsection}{\numberline {4.3.2}Dans les cas $2a = d = 4.48 mm :$}{33}{subsection.4.3.2}
+\contentsline {subsection}{\numberline {4.3.3}Comparaison}{33}{subsection.4.3.3}
+\contentsline {chapter}{\numberline {5}Conclusion}{34}{chapter.5}
+\contentsline {chapter}{\numberline {6}Annexes : Calcul de la courbure}{35}{chapter.6}
+\contentsline {section}{\numberline {6.1}Formules de base}{35}{section.6.1}
+\contentsline {section}{\numberline {6.2}Courbure de la forme moyenne}{36}{section.6.2}
+\contentsline {section}{\numberline {6.3}Perturbation}{36}{section.6.3}
+\contentsline {section}{\numberline {6.4}Cas particulier : forme moyenne sph\IeC {\'e}rique}{37}{section.6.4}
+\contentsline {section}{\numberline {6.5}Param\IeC {\'e}trage selon $r$}{38}{section.6.5}
+\contentsline {section}{\numberline {6.6}Calcul de la forme d'\IeC {\'e}quilibre par m\IeC {\'e}thode de Newton}{38}{section.6.6}
+\contentsline {section}{\numberline {6.7}Impl\IeC {\'e}mentation avec Freefem}{39}{section.6.7}

@@ -1,0 +1,160 @@
+real T=47; //tension de surface
+real R=4.19/2;
+mesh Th = readmesh("MeshBulle.msh");
+//plot(Th,wait=1);
+
+fespace Xh(Th,P2);
+fespace Mh(Th,P1);
+fespace XhxMhxMh(Th,[P2,P1,P1]);
+Xh<complex> [phi];
+Mh<complex> [p];
+Mh<complex> [eta];
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+mesh Thempty=emptymesh(Th);   //plot(Thempty,wait=1);
+fespace Wh1(Thempty,P1);
+Wh1 N0r,N0z,T0r,T0z,K0a,K0b,test;
+
+problem CalcN0r(N0r,test)=
+  int1d(Thempty,qfe=qf3pE)(N0r*test)-int1d(Thempty,qfe=qf3pE)(N.x*test);
+problem CalcN0z(N0z,test)=
+  int1d(Thempty,qfe=qf3pE)(N0z*test)-int1d(Thempty,qfe=qf3pE)(N.y*test);
+
+CalcN0r;
+CalcN0z;
+T0r = N0z;
+T0z = -N0r;
+
+macro Ds(u1,u2)
+[dx(u1)*T0r+dy(u1)*T0z,dx(u2)*T0r+dy(u2)*T0z]
+// EOM
+
+
+problem ComputeK0a(K0a,test)=
+  int1d(Thempty,qfe=qf3pE)(K0a*test)
+ -int1d(Thempty,qfe=qf3pE)(Ds(N0r,N0z)'*[T0r,T0z]*test);
+ComputeK0a;
+
+problem ComputeK0b(K0b,test)=
+  int1d(Thempty,qfe=qf3pE)(K0b*test)
+ -int1d(Thempty,qfe=qf3pE)(N0r*test/x);
+ //+int2d(Thempty)(K0b*test*1e-30);
+ComputeK0b;
+
+//K0b = N0r/(x+1e-10); marche pas
+
+
+// Prolongement de la courbure dans le plan (pour la visualisation uniquement)
+Mh K0ext,dK0ext;
+problem ExtendC(K0ext,dK0ext)=
+    int2d(Th)((dx(K0ext)*dx(dK0ext)+dy(K0ext)*dy(dK0ext)))
++on(2,K0ext=(K0b+K0a));
+ExtendC;
+//plot(K0ext,fill=1,value=1);
+
+
+//plot(K0a,wait=1);
+//plot(K0b,wait=1);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// il faut definir un parametre drhogS = (delta rho) g / sigma 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*varf a([phi,p,eta],[v,q,h]) =
+//LAPLACIEN
+int2d(Th)(dx(phi)*dx(v)*abs(x)+dy(phi)*dy(v)*abs(x))
+//TERME DE PRESSION
+- int2d(Th)(p*q*abs(x))
+//TERME DE COURBURE
+- int1d(Th,2)(p*h*abs(x))
+//TENSION DE SURFACE
+- int1d(Th,2)( T/R^2*( K0a*K0a + K0b*K0b )*eta*h*abs(x))
++ int1d(Th,2)( T*(dx(eta)*N.y-dy(eta)*N.x)*(dx(h)*N.y-dy(h)*N.x)*abs(x) )
+// + int1d(Th,3)(T*drhogS*eta*N0z*h*x
+
+
++ int1d(Th,2)(T*eta*N.y*h*abs(x))
+
+
+//TERMES DE PENALISATION
+  + int2d(Th)( phi*v*1e-7 )
+//+ int2d(Th)( p*q*1e-7   )
+  + int2d(Th)( eta*h*1e-7  );
+ // + on(6,eta=0);
+
+
+varf b([phi,p,eta],[v,q,h]) = int2d(Th)(phi*q*abs(x)) + int1d(Th,2)(eta*v*abs(x)) ;//+ int2d(Th)(p*h*x*(1e-7));
+
+matrix<complex> A = a(XhxMhxMh,XhxMhxMh,tgv=1e30);
+matrix<complex> B = b(XhxMhxMh,XhxMhxMh,tgv=1e30);*/
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//POUR RESOUDRE LE PROBLEME FORCE : ( A VERIFIER )
+
+// attention : il faut définir les inconnues en COMPLEXE
+
+//XhxMhxMh<complex> [phi,p,eta];
+//XhxMhxMh<complex> [v,q,h];
+Xh<complex> [v];
+Mh<complex> [q];
+Mh<complex> [h];
+
+real omega;
+
+
+
+
+
+
+real U = 1.0;
+complex a=1i;
+
+problem RegimeForce([phi,p,eta],[v,q,h]) =
+//LAPLACIEN
+int2d(Th)(dx(phi)*dx(v)*abs(x)+dy(phi)*dy(v)*abs(x))    
+//TERME DE PRESSION
+- int2d(Th)(p*q*abs(x))
+//TERME DE COURBURE
+- int1d(Th,2)(p*h*abs(x))
+//TENSION DE SURFACE 
+- int1d(Th,2)( T/R^2*( K0a*K0a + K0b*K0b )*eta*h*abs(x)) 
++ int1d(Th,2)( T*(dx(eta)*N.y-dy(eta)*N.x)*(dx(h)*N.y-dy(h)*N.x)*abs(x) )
+
+//- int1d(Th,2)(T*eta*N.y*h*abs(x))
+
+//TERMES DE PENALISATION
++ int2d(Th)( phi*v*1e-7 )
+//+ int2d(Th)( p*q*1e-7   )
+  + int2d(Th)( eta*h*1e-7  )
+
++ int2d(Th)(-a*omega*phi*q*abs(x)) + int1d(Th,2)(-a*omega*eta*v*abs(x))   // termes venant de la matrice B
+
++ int1d(Th,6)(abs(x)*v*U) // terme de forcage (second membre, signe a verifier)
+
++ on(6,eta=0); // car eta n'est defini que sur la surface
+
+
+ofstream ff("zzzzz.dat");
+for(int n=0;n<400;n++){
+
+
+omega= 1+omega; // a faire varier ensuite)
+RegimeForce; // Resoud le problème => calcule [phi,p,eta]
+
+//real EnergieCinetique = int2d(Th)(dx(phi)*conj(dx(phi))*abs(x)+dy(phi)*conj(dy(phi))*abs(x));
+
+cout << "omega = : " << omega << endl;
+//ff << omega << " " << eta(2.08053809563e-05, 8.14704200449) <<endl;
+real imageta = abs(imag(eta(-6.34279855938e-06, 4.93044990002)));
+ff << omega << " " << imageta <<endl;
+plot(phi);
+// Normalement cette energie doit avoir des pics aux frequences de resonnance.
+
+
+
+}
+
+

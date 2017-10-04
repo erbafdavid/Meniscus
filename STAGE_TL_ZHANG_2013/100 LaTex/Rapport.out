@@ -1,0 +1,54 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.1}{Contexte g\351n\351ral}{chapter.1}% 2
+\BOOKMARK [1][-]{section.1.2}{\311tude bibliographique}{chapter.1}% 3
+\BOOKMARK [2][-]{subsection.1.2.1}{Modes d'une goutte libre}{section.1.2}% 4
+\BOOKMARK [2][-]{subsection.1.2.2}{Modes d'une goutte sph\351rique avec contrainte}{section.1.2}% 5
+\BOOKMARK [2][-]{subsection.1.2.3}{Modes d'une goutte attach\351e \340 un tube capillaire}{section.1.2}% 6
+\BOOKMARK [1][-]{section.1.3}{But du stage}{chapter.1}% 7
+\BOOKMARK [0][-]{chapter.2}{Goutte ou bulle non visqueux}{}% 8
+\BOOKMARK [1][-]{section.2.1}{Position du probl\350me}{chapter.2}% 9
+\BOOKMARK [2][-]{subsection.2.1.1}{\311quations g\351n\351rales}{section.2.1}% 10
+\BOOKMARK [2][-]{subsection.2.1.2}{D\351composition modale}{section.2.1}% 11
+\BOOKMARK [2][-]{subsection.2.1.3}{Lin\351arisation des \351quations}{section.2.1}% 12
+\BOOKMARK [1][-]{section.2.2}{Mod\351lisation num\351rique}{chapter.2}% 13
+\BOOKMARK [2][-]{subsection.2.2.1}{Formulation variationnelle}{section.2.2}% 14
+\BOOKMARK [2][-]{subsection.2.2.2}{\311criture du probl\350me sous forme matricielle}{section.2.2}% 15
+\BOOKMARK [1][-]{section.2.3}{Validation du code}{chapter.2}% 16
+\BOOKMARK [2][-]{subsection.2.3.1}{Cas d'une goutte sans contrainte}{section.2.3}% 17
+\BOOKMARK [2][-]{subsection.2.3.2}{Cas d'une goutte avec contrainte}{section.2.3}% 18
+\BOOKMARK [2][-]{subsection.2.3.3}{Cas d'une bulle sans contrainte}{section.2.3}% 19
+\BOOKMARK [2][-]{subsection.2.3.4}{Cas d'une bulle avec contrainte}{section.2.3}% 20
+\BOOKMARK [0][-]{chapter.3}{Une gouttelette de liquide immerg\351e dans un autre fluide non visqueux}{}% 21
+\BOOKMARK [1][-]{section.3.1}{Position du probl\350me}{chapter.3}% 22
+\BOOKMARK [2][-]{subsection.3.1.1}{\311tude du champ de base}{section.3.1}% 23
+\BOOKMARK [2][-]{subsection.3.1.2}{\311quations g\351n\351rales}{section.3.1}% 24
+\BOOKMARK [2][-]{subsection.3.1.3}{D\351composition modale}{section.3.1}% 25
+\BOOKMARK [2][-]{subsection.3.1.4}{Lin\351arisation des \351quations}{section.3.1}% 26
+\BOOKMARK [1][-]{section.3.2}{Mod\351lisation num\351rique}{chapter.3}% 27
+\BOOKMARK [2][-]{subsection.3.2.1}{Formulation variationnelle}{section.3.2}% 28
+\BOOKMARK [2][-]{subsection.3.2.2}{\311criture du probl\350me sous forme matricielle}{section.3.2}% 29
+\BOOKMARK [1][-]{section.3.3}{Validation du code}{chapter.3}% 30
+\BOOKMARK [2][-]{subsection.3.3.1}{Cas sans contrainte}{section.3.3}% 31
+\BOOKMARK [2][-]{subsection.3.3.2}{Cas avec contrainte}{section.3.3}% 32
+\BOOKMARK [0][-]{chapter.4}{Une goutte attach\351e \340 un tube capillaire non visqueux}{}% 33
+\BOOKMARK [1][-]{section.4.1}{Position du probl\350me}{chapter.4}% 34
+\BOOKMARK [2][-]{subsection.4.1.1}{\311tude du champ de base}{section.4.1}% 35
+\BOOKMARK [2][-]{subsection.4.1.2}{\311quations g\351n\351rales}{section.4.1}% 36
+\BOOKMARK [2][-]{subsection.4.1.3}{D\351composition modale}{section.4.1}% 37
+\BOOKMARK [2][-]{subsection.4.1.4}{Lin\351arisation des \351quations}{section.4.1}% 38
+\BOOKMARK [1][-]{section.4.2}{Mod\351lisation num\351rique}{chapter.4}% 39
+\BOOKMARK [2][-]{subsection.4.2.1}{Formulation variationnelle}{section.4.2}% 40
+\BOOKMARK [2][-]{subsection.4.2.2}{\311criture du probl\350me sous forme matricielle}{section.4.2}% 41
+\BOOKMARK [1][-]{section.4.3}{Validation du code}{chapter.4}% 42
+\BOOKMARK [2][-]{subsection.4.3.1}{Dans les cas 2a = d = 4.19 mm :}{section.4.3}% 43
+\BOOKMARK [2][-]{subsection.4.3.2}{Dans les cas 2a = d = 4.48 mm :}{section.4.3}% 44
+\BOOKMARK [2][-]{subsection.4.3.3}{Comparaison}{section.4.3}% 45
+\BOOKMARK [0][-]{chapter.5}{Conclusion}{}% 46
+\BOOKMARK [0][-]{chapter.6}{Annexes : Calcul de la courbure}{}% 47
+\BOOKMARK [1][-]{section.6.1}{Formules de base}{chapter.6}% 48
+\BOOKMARK [1][-]{section.6.2}{Courbure de la forme moyenne}{chapter.6}% 49
+\BOOKMARK [1][-]{section.6.3}{Perturbation}{chapter.6}% 50
+\BOOKMARK [1][-]{section.6.4}{Cas particulier : forme moyenne sph\351rique}{chapter.6}% 51
+\BOOKMARK [1][-]{section.6.5}{Param\351trage selon r}{chapter.6}% 52
+\BOOKMARK [1][-]{section.6.6}{Calcul de la forme d'\351quilibre par m\351thode de Newton}{chapter.6}% 53
+\BOOKMARK [1][-]{section.6.7}{Impl\351mentation avec Freefem}{chapter.6}% 54

@@ -1,0 +1,21 @@
+\contentsline {section}{\numberline {1.}Introduction}{1}
+\contentsline {section}{\numberline {2.}Formulas for the curvature in curvilinear coordinates}{1}
+\contentsline {subsection}{\numberline {2.1.}Geometry and basic formulas}{1}
+\contentsline {subsection}{\numberline {2.2.}Perturbative approach to the geometry and curvature}{3}
+\contentsline {section}{\numberline {3.}Iterative schemes and continuation methods}{5}
+\contentsline {subsection}{\numberline {3.1.}P-controlled problem}{5}
+\contentsline {subsection}{\numberline {3.2.}V-controlled problem}{5}
+\contentsline {subsection}{\numberline {3.3.}Pseudo-arclength continuation}{6}
+\contentsline {section}{\numberline {4.}Stability criteria}{7}
+\contentsline {subsection}{\numberline {4.1.}Second order variations}{7}
+\contentsline {subsection}{\numberline {4.2.}Axisymmetric stability criteria for P-controlled problem}{8}
+\contentsline {subsection}{\numberline {4.3.}Axisymmetric perturbations in V-controlled problem}{9}
+\contentsline {subsection}{\numberline {4.4.}Non-axisymmetric perturbations}{9}
+\contentsline {section}{\numberline {5.}Application to pending drops}{10}
+\contentsline {section}{\numberline {6.}Pending drops}{10}
+\contentsline {section}{\numberline {7.}Bubble or drop in oblique gravity}{11}
+\contentsline {section}{\numberline {8.}Conclusion}{12}
+\contentsline {section}{Appendix\nobreakspace {}A}{12}
+\contentsline {section}{Appendix\nobreakspace {}B}{12}
+\contentsline {subsection}{\numberline {B.1.}Weak gravity}{12}
+\contentsline {subsection}{\numberline {B.2.}Zero gravity}{12}

@@ -1,0 +1,187 @@
+verbosity = 0;
+
+// Calcul de la forme d'équilibre d'une bulle attachee 
+
+// Parametres :
+real Rbase = 1; // On prend le rayon du tube capillaire comme echelle de longueur (ne pas changer !)
+real drhogS = 0.0660739; //0.0238; //0.023786604086329;      // premier parametre : (delta rho) g  / sigma (nombre de bond base sur le rayon du tube)
+real dP0S = 0.72666; //0.44; //0.4371225;   // second parametre : (delta P 0) / sigma compté a la base de la bulle
+	
+// La forme d'equilibre de la bulle correspond à  K0 = (dP0S + drhoS * z)
+// La methode consiste a deformer iterativement la forme de la surface jusqu'à aboutir a cet equilibre.
+
+// La forme initiale est lue dans le fichier "MeshBulle_guess.msh". 
+// Elle provient d'une approximation de resultats experimentaux (Programme MeshInit.edp) 
+// Ou bien d'un résultat précédent obtenu pour des parametres proches de ceux recherches (continuation) 
+
+mesh MeshInt=readmesh("MeshBulle_guess.msh");
+mesh Shempty=emptymesh(MeshInt); 	// Maillage 'surface'
+plot(MeshInt);
+fespace Wh1(Shempty,P1);
+Wh1 N0r,N0z,T0r,T0z,K0a,K0b,test,NormN;
+fespace Vh(MeshInt,P1);
+
+//  ----------------------------------------------------------------------------------------------------
+// Definition des problemes elementaires pour calculer les normales et les courbures
+//  ----------------------------------------------------------------------------------------------------
+
+// Macros : derivees curvilignes le long de la surface pour un scalaire et un vecteur
+macro Ds(u1)
+(dx(u1)*T0r+dy(u1)*T0z)
+//
+
+macro Ds2(u1,u2)
+[dx(u1)*T0r+dy(u1)*T0z,dx(u2)*T0r+dy(u2)*T0z]'*[T0r,T0z]
+//
+
+// Normale : composantes selon r et x
+problem CalcN0r(N0r,test)= 	  
+ int1d(Shempty,qfe=qf3pE)(N0r*test)-int1d(Shempty,2,qfe=qf3pE)(N.x*test);
+problem CalcN0z(N0z,test)=	//
+ int1d(Shempty,qfe=qf3pE)(N0z*test)-int1d(Shempty,2,qfe=qf3pE)(N.y*test);
+
+CalcN0r;
+CalcN0z;
+// renormalisation et calcul de la tangente
+NormN = sqrt(N0r^2+N0z^2)+1e-10;
+N0r = N0r/NormN;
+N0z = N0z/NormN;
+T0r =  N0z;
+T0z = -N0r;
+plot([N0r,N0z],fill=1,value=1);
+ 
+ // Courbure : composante dans le plan medidien K0a et dans le plan perpendiculaire K0b 
+problem CalcK0a(K0a,test)=
+   int1d(Shempty,2,qfe=qf3pE)(K0a*test)
+ + int2d(Shempty)(1e-10*K0a*test)
+- int1d(Shempty,2,qfe=qf3pE)(Ds2(N0r,N0z)*test);
+CalcK0a;
+
+problem CalcK0b(K0b,test)=
+ int1d(Shempty,qfe=qf3pE)(K0b*test)
+-int1d(Shempty,2,qfe=qf3pE)(N0r/x*test);
+CalcK0b;
+
+// Prolongement de la courbure dans le plan (pour la visualisation uniquement)
+Vh K0ext,dK0ext;
+problem ExtendC(K0ext,dK0ext)=
+    int2d(MeshInt)((dx(K0ext)*dx(dK0ext)+dy(K0ext)*dy(dK0ext)))
++on(2,K0ext=(K0a+K0b))
++on(6,K0ext=dP0S);
+ExtendC;
+plot(K0ext,fill=1,value=1);
+
+// Calcul de la deformation de surface libre necessaire pour corriger la courbure du maillage
+Wh1 eta ;
+problem CalcEta(eta,test) = int1d(Shempty,2)(((K0a+K0b)-(dP0S+drhogS*y))*test) 
+                    + int1d(Shempty,2)((Ds(eta))*(Ds(test)) -test*Ds(eta)*T0r/x -(K0a^2+K0b^2)*eta*test-drhogS*eta*test*N0z)
+		    + int2d(Shempty)(1e-20*eta*test)
+		    +on(6,eta=0);
+		     
+// Prolongement de la deformation dans le domaine (pour visualisation uniquement)
+Vh etaext;
+problem ExtendEta(etaext,dK0ext)=
+    int2d(MeshInt)((dx(etaext)*dx(dK0ext)+dy(etaext)*dy(dK0ext)))
++on(2,etaext=eta);
+
+// Calcul du champ lagrangien pour deformation de maillage
+fespace Vh11(MeshInt,[P1,P1]);
+Vh11 [ur,uz], [vr,vz];
+problem CalcDef([ur,uz],[vr,vz])=
+    int2d(MeshInt)( (dx(ur)*dx(vr)+dy(ur)*dy(vr)) + (dx(uz)*dx(vz)+dy(uz)*dy(vz)) )
++on(2,ur=eta*N0r,uz=eta*N0z)
++on(6,ur=0,uz=0);
+
+
+
+//  ----------------------------------------------------------------------------------------------------
+// Boucle de Newton pour deformation du maillage jusqu'à convergence
+//  ----------------------------------------------------------------------------------------------------
+
+
+for(int i = 0; i<15;i++)
+{
+// Calcul de la deformation de surface et deplacement du maillage
+CalcEta;
+//ExtendEta;
+//plot(etaext,fill=1,value=1,wait=1);
+CalcDef;
+plot([ur,uz],fill=1,value=1);
+MeshInt = movemesh(MeshInt,[x+ur,y+uz]);
+plot(MeshInt,Shempty);
+Shempty = emptymesh(MeshInt);
+
+// Recalcul des normales et courbures
+CalcN0r;
+CalcN0z;
+NormN = sqrt(N0r^2+N0z^2)+1e-10;
+N0r = N0r/NormN;
+N0z = N0z/NormN;
+T0r =  N0z;
+T0z = -N0r;
+CalcK0b;
+CalcK0a;
+
+ExtendC;
+K0ext = K0ext-(dP0S+drhogS*y);
+plot(K0ext,fill=1,value=1);
+real Res = int1d(Shempty,2)( (K0a+K0b-(dP0S+drhogS*y))^2 );
+cout << " iteration " << i << " : Res = " << Res << endl;
+}
+
+//  ----------------------------------------------------------------------------------------------------
+// Fin du Newton 
+//  ----------------------------------------------------------------------------------------------------
+
+cout << endl << " ------- NEWTON TERMINE -------" << endl << endl;
+// Ecriture du maillage dans un fichier
+savemesh(MeshInt,"MeshBulle.msh");
+
+// Calcul de diverses quantités intéressantes
+real Vol = pi*int2d(MeshInt)(abs(x)); // Volume
+real z0 = (pi*int2d(MeshInt)(abs(x)*y))/Vol; // Position du centre geometrique
+real Req = (3*Vol/4/pi)^(1./3); // Rayon equivalent
+
+real[int] T(dK0ext.n);
+
+dK0ext = y;
+T = dK0ext[];
+real ztop = T.max; // hauteur;
+
+dK0ext = x;
+T = dK0ext[];
+real Rmax = T.max; // largeur;
+
+ ExtendC;
+T = K0ext[];
+real K0max = T.max; // Courbure maxi.
+
+real Rcap = 2/K0max; // Rayon de courbure au sommet
+ 
+
+cout << " ####### STATISTIQUES sur la forme : " << endl << endl;
+
+cout << " ## Volume                   : " << Vol << endl;
+cout << " ## Rayon a la base          : " << Rbase << endl;
+cout << " ## Rayon equivalent         : " << Req << endl;
+cout << " ## Hauteur                  : " << ztop << endl;
+cout <<  " ## Position du centre      : " << z0 << endl;
+cout << " ## Rayon max                : " << Rmax << endl;
+cout << " ## Courbure max             : " << K0max << "  ; autre methode : " << dP0S + drhogS*ztop << endl;
+cout << " ## Rayon de courb. au sommet: Rcap = " << Rcap << endl;
+cout << endl;
+cout << " ## BOND base sur Rbase      : " << drhogS*Rbase^2 << endl;
+cout << " ## BOND base sur Rcap       : " << drhogS*Rcap^2 << endl;
+cout << " ## BOND base sur Req        : " << drhogS*Req^2 << endl;
+
+cout << endl << "The end..." << endl << endl;
+
+
+
+
+
+
+
+
+
+
