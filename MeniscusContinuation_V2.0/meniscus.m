@@ -1,4 +1,3 @@
-
 classdef meniscus
     %%
     %% Package to compute the equilibrium shapes and stability properties
@@ -9,10 +8,14 @@ classdef meniscus
     %% Written in object-oriented matlab style
     %%
     
+    % remarque : remplacer les (if (typestart == ''...)
+    % par switch 
+    
     properties
         %%%% physical properties
         nbdim = 3
-        rhog = 1
+        rhog = -1 % set to +1 for hanging drops and liquid bridges ; -1 for sessile drops
+        gamma = 1 % warning : this should be introduced in the code in a clean way
         typestart = 'axisX' % possible types : 'axisX', 'pined' 
         typeend = 'pined'   % possible types : 'pined', 'angle'
         beta = 0            % contact angle, for angle-controled case
@@ -36,10 +39,6 @@ classdef meniscus
         AS
         A1
         RHS % right-hand-side for newton iteration
-        %%% Eigenvalues (for stability criteria)
-        lambdaminV = -1;
-        lambdaminP = -1;
-        lambdamin1 = -1;
         %%%% deformations in the iteration processes
         eta
         dP
@@ -48,7 +47,7 @@ classdef meniscus
         Vans
         Pans
         Vtarget
-        %discretization = 'FD';
+        discretization = 'FD'; %other choice 'FE'
         conv = 0;
         verbosity = 5;
         Weta = 1;
@@ -60,6 +59,10 @@ classdef meniscus
         dVdS = 0;
         dPdS = 1;
         Nstep = 0;
+        istab = 'no'; % if 'yes' we will compute and plot the stability properties
+        ifig20 = 'no'; % if 'yes' plot additional results in figures 21,22,23,26
+        idebug = 0;% set to larger values for 'debug' mode
+        ixi = 0; % set to 1 to use grid reuniformisation using 'calcxi'
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,7 +78,10 @@ classdef meniscus
             % type = cylinder => param is [Radius,Length,Bond]
             % type = sphere => spherical cap, angle-controled, param is [R0,beta]
             
-            if (strcmpi(type,'flat')==1)
+            
+            switch(type)
+            
+                case('flat')
                 m.N = N;
                 R0 = param(1);
                 t = 0:1/(N-1):1;
@@ -87,7 +93,8 @@ classdef meniscus
                 m.typeend = 'pined';
                 m.dVdS = 1; % to initiate arclength continuation in increasing-V
                 m.dPdS = 0;
-            elseif (strcmpi(type,'cylinder')==1)
+                
+                case ('cylinder')
                 R0 = param(1);
                 L = param(2);
                 m.rhog = param(3);
@@ -101,7 +108,7 @@ classdef meniscus
                 m.typestart = 'pined';
                 m.typeend = 'pined';
                 
-            elseif (strcmpi(type,'sphere')==1)
+                case ('sphere')
                 R0 = param(1);
                 m.beta = param(2);
                 m.N = N;
@@ -112,12 +119,14 @@ classdef meniscus
                 m.P = 2/R0;
                 m.typestart = 'axisX';
                 m.typeend = 'angle';
-                m.rhog = 1;
+                m.rhog = -1; % -1 for sessile drop ; +1 for hanging drop
+                m. discretization = 'FE';
+                m.idebug = 100;
                 m.dPdS = -1; % to initiate arclength continuation in decreasing-P direction
             
-            else
+                case default
                 disp(' Meniscus construction : invalid type !');
-            end
+            end %switch
             
             m = calcgeom(m); 
             plotmeniscus(m,11,'k:');
@@ -152,11 +161,7 @@ classdef meniscus
             if (m.typecont == 'V')
                 m.Vtarget = m.V+dX;
             end
-            if (m.typecont == 'S')   
-                m = calcmat(m);
-                m.dS = dX;
-                m = calcGuess(m);
-            end
+
             
             while ((RES > epsilon)&&(it<itmax)&&(RES<100))
                 % Newton iteration 
@@ -165,11 +170,33 @@ classdef meniscus
                 if(max(abs(m.ds))>1)
                     RES = 20000;
                 end
+                
                 m = calcmat(m);
                 
                 if (m.typecont == 'P')
                     m = calcRHS(m);
+                    
+                    % debug sauvage
+                    %etaattendu = 1e-3*linspace(-0.5968,-0.7010,50)
+                    %RHSverif = m.AP(1:m.N,1:m.N)*etaattendu'
+                    %m.RHS
+                    %fin debug sauvage
+                    
+                    
                     m.eta = (m.AP(1:m.N,1:m.N)\m.RHS(1:m.N)')';
+                     
+                    if(m.idebug>=10) 
+                    disp(['debug : iteration ',num2str(it)]);
+                    disp('RHS :');
+                    m.RHS
+                    disp('eta :');
+                    m.eta
+                    disp('A');
+                    m.AP
+                    plotmeniscus(m,11,'k:');
+                    pause;
+                    end
+     
                     dP = 0;
                     RES = max(abs(m.RHS(1:m.N)));
                 end
@@ -179,32 +206,53 @@ classdef meniscus
                     etaXX = (m.AV(1:m.N+1,1:m.N+1)\m.RHS(1:m.N+1)')';
                     m.eta = etaXX(1:m.N);
                     dP = etaXX(m.N+1);
+                    
+                    
+                   if(m.idebug>=10) 
+                    disp(['debug : iteration ',num2str(it)]);
+                    disp('RHS :');
+                    m.RHS
+                    disp('eta :');
+                    m.eta
+                    disp('dp : ');
+                    dP
+                    plotmeniscus(m,11,'k:');
+                    pause;
+                    end
+                    
+                    
                     RES = max(abs(m.RHS(1:m.N+1)));
                 end
+             
                 
-                if (m.typecont == 'S')
-                    m = calcRHS(m);
-                    etaXX = (m.AS(1:m.N+1,1:m.N+1)\m.RHS(1:m.N+1)')';
-                    m.eta = etaXX(1:m.N);
-                    dP = etaXX(m.N+1);
-                    RES = max(abs(m.RHS(1:m.N)));
-                end
-                
-                m.R = m.R + m.Weta*m.eta.*sin(m.alpha);
-                m.Z = m.Z - m.Weta*m.eta.*cos(m.alpha);
+                m.R = m.R + m.eta.*sin(m.alpha);
+                m.Z = m.Z - m.eta.*cos(m.alpha);
                 m.P = m.P+dP;
-                
-                % correction to ensure equal spacing of gridpoints 
-                if (m.typeend=='angle')
+                 if (m.typeend=='angle')
                     ZN = m.Z(N);
+                    m.Z = m.Z-ZN;
                 else
                     ZN = 0;
                 end
                 
+                % correction to ensure equal spacing of gridpoints 
+              if(m.ixi==1)  
+               
                 m = calcxi(m);
                 m.R = m.R  + m.Wxi*m.xi.*cos(m.alpha);
-                m.Z = m.Z  + m.Wxi*m.xi.*sin(m.alpha)-ZN;
-            
+                m.Z = m.Z  + m.Wxi*m.xi.*sin(m.alpha);
+              end
+                
+              if(m.idebug>=10)
+                   m=calcgeom(m);
+                    disp('alpha :');
+                    m.alpha
+                    disp('Ka :');
+                    m.Ka
+                    disp('Kb : ');
+                    m.Kb  
+              end
+                
                 it = it+1;
                              
             end %Newton iteration 
@@ -221,11 +269,15 @@ classdef meniscus
                     fprintf(' New converged meniscus shape for (P,V) = ( %f , %f ); it = %i \n',m.P,m.V,it);
                 end
                 plotmeniscus(m,11,'r-');                
+                
+                if (strcmp(m.ifig20,'yes')==1)
                 figure(21);hold on;plot(m.P,m.V,'r.');
                 figure(26);hold on;plot(m.P,m.V/m.Vref,'r.');
                 
                 figure(22);hold on;plot(m.P,m.Z(m.N) - m.Z(1),'r.');
                 figure(23);hold on;plot(m.P,m.R(m.N),'r.');
+                end
+                
                 
              end
             m.Nstep = m.Nstep+1;
@@ -244,8 +296,10 @@ classdef meniscus
             itloop = 0;
             m.typecont=type;
             while (itloop<Nstep && m.conv==1)
-                m = step(m,type,dX);
-                m = stab(m);
+                m = step(m,type,dX);    
+                if(strcmp(m.istab,'yes')==1)
+                    m = stab(m);
+                end 
                 itloop = itloop+1;
                 if(m.conv==1)
                     Vtab = [Vtab m.V];
@@ -296,7 +350,7 @@ classdef meniscus
             
             % angle at center of sides (intermediate array)
             for i=1:N-1
-                alphaS(i) =  atan2(m.Z(i+1)-m.Z(i),m.R(i+1)-m.R(i)); 
+                alphaS(i) =  atan2(m.Z(i+1)-m.Z(i),m.R(i+1)-m.R(i));
             end
             unwrap(alphaS);
             %   angle and curvature at nodes
@@ -323,12 +377,14 @@ classdef meniscus
                 end
             end
             
-            if (m.typestart=='pined')
+            if (m.typeend=='pined')
                 m.alpha(N) =2*m.alpha(N-1)-m.alpha(N-2);
                 m.Ka(N) =2*m.Ka(N-1)-m.Ka(N-2);
                 m.Kb(N) =2*m.Kb(N-1)-m.Kb(N-2);
             else % angle
-                m.alpha(N) = m.beta;
+                %m.alpha(N) = m.beta; % ne marche pas en elements finis !
+                % on essaie autre chose :S
+                m.alpha(N) =2*m.alpha(N-1)-m.alpha(N-2);
                 m.Ka(N) =2*m.Ka(N-1)-m.Ka(N-2);
                 m.Kb(N) =2*m.Kb(N-1)-m.Kb(N-2);
             end
@@ -349,7 +405,7 @@ classdef meniscus
             %
             % Equation : -K1(eta)+N0z*eta*rhog = (K0 - (P+rhog*z))
             % Resolution as a matricial equation : A * eta = RHS
-            
+           
             A = 0;
             N = m.N;
             ds = m.ds;
@@ -358,102 +414,191 @@ classdef meniscus
             alpha = m.alpha;
             Ka = m.Ka;
             Kb = m.Kb;
-            
-            for i=2:N-1
-                % d^2 eta / d^2 s0
-                A(i,i-1) = 2*ds(i)/(ds(i)*ds(i-1)*(ds(i)+ds(i-1)));
-                A(i,i) = -2/(ds(i)*ds(i-1));
-                A(i,i+1) = 2*ds(i-1)/(ds(i)*ds(i-1)*(ds(i)+ds(i-1)));
-                % T0r/r* d eta / d s0
-                if (m.nbdim==3)
-                    A(i,i-1) = A(i,i-1) -ds(i)^2/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i);
-                    A(i,i) = A(i,i) +  (ds(i)^2-ds(i-1)^2)/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i);
-                    A(i,i+1) = A(i,i+1) +ds(i-1)^2/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i);
+            switch (m.discretization)
+                
+                case('FD') % finite difference
+                    
+                for i=2:N-1
+                    % d^2 eta / d^2 s0
+                    A(i,i-1) = 2*ds(i)/(ds(i)*ds(i-1)*(ds(i)+ds(i-1)));
+                    A(i,i) = -2/(ds(i)*ds(i-1));
+                    A(i,i+1) = 2*ds(i-1)/(ds(i)*ds(i-1)*(ds(i)+ds(i-1)));
+                    % T0r/r* d eta / d s0
+                    if (m.nbdim==3)
+                        A(i,i-1) = A(i,i-1) -ds(i)^2/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i);
+                        A(i,i) = A(i,i) +  (ds(i)^2-ds(i-1)^2)/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i);
+                        A(i,i+1) = A(i,i+1) +ds(i-1)^2/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i);
+                    end
+                    %  (Ka^2 + Kb^2) eta
+                    A(i,i) = A(i,i) + 1*(Ka(i)^2+Kb(i)^2);
+                    % + N0z*eta*rhog%
+                    A(i,i) = A(i,i) + m.rhog*cos(alpha(i));
+                end;
+
+                % case i=1
+                if (strcmpi(m.typestart,'axisX')==1) %for bubble/drop : point 1 is on symmetry axis
+                    if (m.nbdim==3)
+                        A(1,1) = -4/(ds(1)^2);  %%% factor 4 because 1/R d eta / ds = d^2 eta / d s^2
+                        A(1,2) = 4/(ds(1)^2);
+                    else
+                        A(1,1) = -2/(ds(1)^2);
+                        A(1,2) = 2/(ds(1)^2);
+                    end
+                    A(1,1) = A(1,1)+(Ka(1)^2+Kb(1)^2)+m.rhog;
+                else % for bridge : point 1 is pinned
+                    A(1,1) = -1;
+                    A(1,2) = 0;
                 end
-                %  (Ka^2 + Kb^2) eta
-                A(i,i) = A(i,i) + 1*(Ka(i)^2+Kb(i)^2);
-                % + N0z*eta*rhog%
-                A(i,i) = A(i,i) + m.rhog*cos(alpha(i));
-            end;
+
+                if (strcmpi(m.typeend,'pined')==1)
+                    % "pinned" case
+                    A(N,N) = -1;
+                    A(N,N-1) = 0;
+                    A(N,N-2) = 0;
+                elseif(strcmpi(m.typeend,'angle')==1)
+                    A(N,N-2) =  1/(2*ds(N-1));
+                    A(N,N-1) = -4/(2*ds(N-1));
+                    A(N,N)   =  3/(2*ds(N-1));
+                end
+                AA1 = A(1:N,1:N); % for matrix 1, before adding shift for angle-controled case
+
+
+
+                 if(strcmpi(m.typeend,'angle')==1)
+                     % this term is because we displace the whole interface
+                     % by eta n - eta(smax) cos(alphamax)
+                    for i=1:N-1
+                        A(i,N) = A(i,N) - m.rhog*cos(alpha(N));
+                    end
+                end
+
+                m.AP = A;
+                m.AV(1:N,1:N) = A;
+
+
+                %%% END OF MATRIX AP ; NEXT IS FOR AV 
+
+                % last column  for AV  / AS : effet of dP
+                for i=2:N-1
+                    m.AV(i,N+1) = +1;
+                end;
+                if(R(1)==0)
+                    m.AV(1,N+1) = +1;
+                end
+                m.AV(N+1,N+1) = 0;
+
+                % last line for AV : Volume increment
+                for i=2:N-1
+                    m.AV(N+1,i) =  -(ds(i-1)/2*(2*R(i)+R(i-1))/3 + ds(i)/2*(2*R(i)+R(i+1))/3)*2*pi;
+                end;
+                m.AV(N+1,1) = -ds(1)/2*(2*R(1)+R(2))/3*2*pi;
+                m.AV(N+1,N) = -ds(N-1)/2*(2*R(N)+R(N-1))/3*2*pi;
+
+                if(strcmpi(m.typeend,'angle')==1)
+                    m.AV(N+1,N) = m.AV(N+1,N)-pi*R(N)^2*cos(m.alpha(N));
+                end
+
+                % Matrix A1 : for non-axisymetric instabilities
+
+                for i=2:N
+                    AA1(i,i) = AA1(i,i) - 1/R(i)^2;
+                end
+
+                AA1(1,1) = -1; AA1(1,2) = 0;  
+                % point i=1 is either pinned or axis => cannot move
+                % NB. point i=N (pined or angle) => same as in AP, nothing to do
+                m.A1 = AA1;
+             %fin Calcul de A par FD
             
-            % case i=1
-            if (strcmpi(m.typestart,'axisX')==1) %for bubble/drop : point 1 is on symmetry axis
-                if (m.nbdim==3)
-                    A(1,1) = -4/(ds(1)^2);  %%% factor 4 because 1/R d eta / ds = d^2 eta / d s^2
-                    A(1,2) = 4/(ds(1)^2);
+            %Methode des elements finis
+                case('FE')
+                    
+                dpdz=m.rhog;
+               for i=2:N-1 % pour construire la ligne i etabar = hat(eta)(i) 
+                    %  int ( - (d etabar / d s0 * d eta /d s0) *R ) ds0
+                    A(i,i-1) = (R(i)+R(i-1))/2*1/ds(i-1);
+                    A(i,i) = - R(i)*(1/ds(i)+1/ds(i-1));% 
+                    % NB CA SERAIT PLUS LOGIQUE D'AVOIR :
+                    % A(i,i) = - ( 1/ds(i)*(R(i)+R(i+1))/2 + 1/ds(i-1)*(R(i)+R(i-1))/2 )  
+                    %if (i~=N-1)&&(m.typeend=='pined') 
+                    A(i,i+1) =  (R(i)+R(i+1))/2*1/ds(i)  ; 
+                    %end
+                    %  int (Ka^2 + Kb^2- dpdz*cos(alpha)) etabar eta 
+                    A(i,i-1) = A(i,i-1)  + (  (Ka(i)^2+Kb(i)^2-dpdz*cos(alpha(i)))*R(i) ...
+                                            + (Ka(i-1)^2+Kb(i-1)^2-dpdz*cos(alpha(i-1)))*R(i-1) )/2 * (ds(i-1)/6);  
+                    A(i,i) = A(i,i) + (Ka(i)^2+Kb(i)^2- dpdz*cos(alpha(i)))*R(i)*(ds(i-1)+ds(i))/3; 
+                    %if (i~=N-1)&&(m.typeend=='pined') 
+                    A(i,i+1) = A(i,i+1)  + (  (Ka(i)^2+Kb(i)^2-dpdz*cos(alpha(i)))*R(i) ...
+                                            + (Ka(i+1)^2+Kb(i+1)^2-dpdz*cos(alpha(i+1)))*R(i+1) )/2 * (ds(i)/6); 
+                    %end
+                    %if(m.typeend=='pined')
+                    %    A(N,N-1) = 0; % not even sure it is necessary
+                    %end
+               end
+               % case i=1
+                if  (strcmpi(m.typestart,'axisX')==1) %for bubble/drop : point 1 is on symmetry axis
+                  A(1,1) = -1/ds(1)*(R(2)/2);  %%% facteur 4 car 1/R d eta / ds = d^2 eta / d s^2 (mais en fait 2...) 
+                  A(1,2) = A(2,1);
+                  A(1,1) = A(1,1)+ (   (Ka(1)^2+Kb(1)^2-dpdz*cos(alpha(1)))*R(1) ...
+                                     + (Ka(2)^2+Kb(2)^2-dpdz*cos(alpha(2)))*R(2) )/2 * (ds(1)/3); 
+                else % for bridge : point 1 is pinned
+                  A(1,1) = 1;
+                  A(1,2) = 0;
+                end
+                if (strcmpi(m.typeend,'pined')==1)
+                    % "pinned" case
+                    A(N,N) = -1;
+                    A(N,N-1) = 0;
+                    A(N,N-2) = 0;
+                elseif(strcmpi(m.typeend,'angle')==1)
+                    % cas a traiter différemment  
+                    % partie integration par partie idem au cas i
+                    
+                    A(N,N-1) = (R(N)+R(N-1))/2*1/ds(N-1);
+                    A(N,N) = - R(N)*(1/ds(N-1));% 
+                    A(N,N-1) = A(N,N-1)  + (  (Ka(N)^2+Kb(N)^2-dpdz*cos(alpha(N)))*R(N) ...
+                                            + (Ka(N-1)^2+Kb(N-1)^2-dpdz*cos(alpha(N-1)))*R(N-1) )/2 * (ds(N-1)/6);  
+                    A(N,N) = A(N,N) + (Ka(N)^2+Kb(N)^2- dpdz*cos(alpha(N)))*R(N)*(ds(N-1))/3;
+                    A(N,N-2) = 0;%pour etre sur
+                    % terme supplementaire venant du terme de bord de l'IPP
+                    % est a mettre dans le RHS
+                    
+                    % terme supplementaire traduisant la translation
+                    % verticale pour recoller à la surface
+                    for i=2:N-1
+                    A(i,N) = A(i,N) - dpdz*cos(alpha(N))*R(i)*(ds(i-1)+ds(i))/2;
+                    end; 
+                    A(1,N) = A(1,N) - dpdz*cos(alpha(N))*(R(1)+R(2))/2*(ds(1))/2;
+                    A(N,N) = A(N,N) - dpdz*cos(alpha(N))*(R(N)+R(N-1))/2*(ds(N-1))/2;
+                    
+                end
+                m.AP = A;
+                m.AV(1:N,1:N) = A;
+                
+                % derniere ligne : 1/(2*pi) dV 
+                for i=2:N-1
+                    m.AV(N+1,i) =  R(i)*(ds(i)+ds(i-1))/2; % test sign
+                    % ca semble + logique d'avoir
+                    % (R(i)+R(i-1)/2)*ds(i-1)/2 + (R(i)+R(i+1))/2*ds(i)/2  
+                    % a tester... 
+                end;
+                if (strcmpi(m.typestart,'axisX')==1)
+                    m.AV(N+1,1) = R(2)/2*ds(1)/2; % test sign
+                end
+                if(strcmpi(m.typeend,'pined')==1)
+                       m.AV(N+1,N) = R(N-1)/2*ds(N-1)/2; 
                 else
-                    A(1,1) = -2/(ds(1)^2);
-                    A(1,2) = 2/(ds(1)^2);
+                    m.AV(N+1,N) = R(N-1)/2*ds(N-1)/2;
                 end
-                A(1,1) = A(1,1)+(Ka(1)^2+Kb(1)^2)+m.rhog;
-            else % for bridge : point 1 is pinned
-                A(1,1) = -1;
-                A(1,2) = 0;
-            end
-            
-            if (strcmpi(m.typeend,'pined')==1)
-                % "pinned" case
-                A(N,N) = -1;
-                A(N,N-1) = 0;
-                A(N,N-2) = 0;
-            elseif(strcmpi(m.typeend,'angle')==1)
-                A(N,N-2) =  1/(2*ds(N-1));
-                A(N,N-1) = -4/(2*ds(N-1));
-                A(N,N)   =  3/(2*ds(N-1));
-            end
-            AA1 = A(1:N,1:N); % for matrix 1, before adding shift for angle-controled case
-            
-            
-            
-             if(strcmpi(m.typeend,'angle')==1)
+                m.AV(N+1,N+1) = 0;
+
+                % last column : effet of dP
                 for i=1:N-1
-                    A(i,N) = A(i,N) - m.rhog*cos(alpha(N));
+                    m.AV(i,N+1) = m.AV(N+1,i);
                 end
-            end
-            
-            m.AP = A;
-            m.AV(1:N,1:N) = A;
-            m.AS(1:N,1:N) = A;
-            
-            
-            %%% END OF MATRIX AP ; NEXT IS FOR AV or AS
-            
-            % last column  for AV  / AS : effet of dP
-            for i=2:N-1
-                m.AV(i,N+1) = +1;
-            end;
-            if(R(1)==0)
-                m.AV(1,N+1) = +1;
-            end
-            m.AV(N+1,N+1) = 0;
-            
-            % last line for AV : Volume increment
-            for i=2:N-1
-                m.AV(N+1,i) =  -(ds(i-1)/2*(2*R(i)+R(i-1))/3 + ds(i)/2*(2*R(i)+R(i+1))/3)*2*pi;
-            end;
-            m.AV(N+1,1) = -ds(1)/2*(2*R(1)+R(2))/3*2*pi;
-            m.AV(N+1,N) = -ds(N-1)/2*(2*R(N)+R(N-1))/3*2*pi;
-            
-            if(strcmpi(m.typeend,'angle')==1)
-                m.AV(N+1,N) = m.AV(N+1,N)-pi*R(N)^2*cos(m.alpha(N));
-            end
-            
-            % Matrix AS : increment in arclength
-            
-                    m.AS(1:N,N+1) = m.AV(1:N,N+1);
-                    m.AS(N+1,1:N) = -m.dVdS*m.AV(N+1,1:N)/m.Vref; 
-                    m.AS(N+1,N+1) = m.dPdS;
-          
-            % Matrix A1 : for non-axisymetric instabilities
-            
-            for i=2:N
-                AA1(i,i) = AA1(i,i) - 1/R(i)^2;
-            end
-            
-            AA1(1,1) = -1; AA1(1,2) = 0;  
-            % point i=1 is either pinned or axis => cannot move
-            % NB. point i=N (pined or angle) => same as in AP, nothing to do
-            m.A1 = AA1;
+
+
+            end%switch
         
         end % function calcmat
         
@@ -461,35 +606,66 @@ classdef meniscus
         
         function m = calcRHS(m);
             % computes the right-hand-side in P,V and S continuations
-            
+            dpdz=m.rhog;
             % Laplace/Young operator for central points
-            for i=2:m.N-1
-                m.RHS(i) = m.Ka(i)+m.Kb(i)-m.P+m.rhog*(m.Z(i)-m.Z(m.N));
-            end
-           
-            if (strcmpi(m.typestart,'axisX')==1)
-                m.RHS(1) = m.Ka(1)+m.Kb(1)-m.P+m.rhog*(m.Z(1)-m.Z(m.N));
-            end
-            if (strcmpi(m.typestart,'pined')==1)
-                m.RHS(1) = 0;
-            end
- 
-            if (strcmpi(m.typeend,'pined')==1)
-                m.RHS(m.N) = 0;
-            end
-            if (strcmpi(m.typeend,'angle')==1)
-                m.RHS(m.N)   =  (m.alpha(m.N)-m.beta);
-            end
+            switch(m.discretization)
+                
+                case('FD')
+                
+                for i=2:m.N-1
+                    m.RHS(i) = m.gamma*(m.Ka(i)+m.Kb(i))-m.P+m.rhog*(m.Z(i)-m.Z(m.N));
+                end
+                if (strcmpi(m.typestart,'axisX')==1)
+                    m.RHS(1) = m.gamma*(m.Ka(1)+m.Kb(1))-m.P+m.rhog*(m.Z(1)-m.Z(m.N));
+                end
+                if (strcmpi(m.typestart,'pined')==1)
+                    m.RHS(1) = 0;
+                end
+
+                if (strcmpi(m.typeend,'pined')==1)
+                    m.RHS(m.N) = 0;
+                end
+                if (strcmpi(m.typeend,'angle')==1)
+                    m.RHS(m.N)   =  (m.alpha(m.N)-m.beta);
+                end
+
+                % For V continuation : volume constraint
+                if (m.typecont=='V')
+                    m.RHS(m.N+1) = -(m.Vtarget-m.V);
+                end   
+                
+                
+                
+                case('FE') %FE
+                    
+                for i=2:m.N-1
+                    m.RHS(i) = (m.gamma*(m.Ka(i)+m.Kb(i))-m.P+dpdz*m.Z(i))*m.R(i)*(m.ds(i-1)+m.ds(i))/2; 
+                end
+                if (strcmpi(m.typestart,'axisX')==1)
+                    m.RHS(1) =0;
+                end
+                if (strcmpi(m.typestart,'pined')==1)
+                    m.RHS(1) = 0;
+                end
+
+                if (strcmpi(m.typeend,'pined')==1)
+                    m.RHS(m.N) = 0;
+                end
+                if (strcmpi(m.typeend,'angle')==1)
+                    % a verifier
+                    m.RHS(m.N) =-(m.alpha(m.N)-m.beta)*(m.R(m.N));
+                end
+
+                % For V continuation : volume constraint (warning in FE
+                % we actually impose V/2pi) 
+                if (m.typecont=='V')
+                    m.RHS(m.N+1) = (m.Vtarget-m.V)/(2*pi);
+                end
+                
+            end%switch  
             
-            % For V continuation : volume constraint
-            if (m.typecont=='V')
-                m.RHS(m.N+1) = -(m.Vtarget-m.V);
-            end
-            
-            % For S continuation : arclength step
-            if (m.typecont=='S')
-                m.RHS(m.N+1) = 0;
-            end
+
+
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -502,17 +678,6 @@ classdef meniscus
                 dP = 1;
                 dV = -m.AV(m.N+1,1:m.N)*m.eta'/m.Vref;
                 dS = sqrt(dP^2+dV^2);
-                if (m.typecont == 'S')
-                    dPdSi = dP/dS;
-                    dVdSi = dV/dS;
-                    if(dPdSi*m.dPdS+dVdSi*m.dVdS>0)
-                        m.dPdS = dPdSi;
-                        m.dVdS = dVdSi;
-                    else
-                        m.dPdS = -dPdSi;
-                        m.dVdS = -dVdSi;
-                    end
-                end
                 m.R = m.R + m.dS*m.dPdS*m.eta.*sin(m.alpha);
                 m.Z = m.Z - m.dS*m.dPdS*m.eta.*cos(m.alpha);
                 m.P = m.P+m.dS*m.dPdS;
@@ -532,8 +697,9 @@ classdef meniscus
             end
         end % function calcxi
         
-       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-             
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+                  
         function m = stab(m);
             % computes the minimun eigenvalues of AP,AV,A1 and checks if a
             % bifurcation is encountered in the loop process
@@ -571,7 +737,7 @@ classdef meniscus
                 figure(20);
                 hold on;
                 plot(PbV,VbV,'xr','MarkerSize',10);
-                figure(26);
+                figure(25);
                 hold on;
                 plot(PbV,VbV/m.Vref,'xr','MarkerSize',10);
                 if (imag(VbV)==0)
@@ -588,7 +754,7 @@ classdef meniscus
                 figure(20);
                 hold on;
                 plot(real(PbV),real(VbV),'+b','MarkerSize',10);
-                figure(26);
+                figure(25);
                 hold on;
                 plot(real(PbV),real(VbV/m.Vref),'+b','MarkerSize',10);
                 if (imag(VbV)==0)
@@ -605,7 +771,7 @@ classdef meniscus
                 figure(20);
                 hold on;
                 plot(PbV,VbV,'*g','MarkerSize',10);
-                figure(26);
+                figure(25);
                 hold on;
                 plot(PbV,VbV/m.Vref,'*g','MarkerSize',10);
                 if (imag(VbV)==0)
@@ -621,26 +787,15 @@ classdef meniscus
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        function obliqueG(m,eps);
-
-            % function to compute and plot the shape of the meniscus in a 
-            figure(40);
-            plot(m.R,m.Z,'k',-m.R,m.Z,'k');
-            hold on;
-            m.RHS = m.R*m.rhog;
-            m.RHS(m.N)=0;
-            m.eta(1:m.N) = (m.A1(1:m.N,1:m.N)\m.RHS(1:m.N)')';
-            plot( m.R+eps*m.eta.*sin(m.alpha), m.Z-eps*m.eta.*cos(m.alpha),'r');
-            plot(-m.R+eps*m.eta.*sin(m.alpha), m.Z+eps*m.eta.*cos(m.alpha),'r');
-
-        end %function plotmeniscus
+        
         
         
         function plotmeniscus(m,numfig,plotstyle);
             % function to plot the meniscus profile
             figure(numfig);
-            plot(m.R,m.Z,plotstyle);
+            plot(m.R,-m.Z,plotstyle);
             hold on;
+            grid on
         end %function plotmeniscus
         
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -682,6 +837,8 @@ classdef meniscus
             ylabel('V');
             hold on;
             
+            if (strcmp(m.ifig20,'yes')==1)
+            
             figure(21);
             title('P/V results (dots)');
             xlabel('P');
@@ -701,19 +858,21 @@ classdef meniscus
             hold on;
             
             
-            
-            
             figure(26);
             title('P/V* results');
             xlabel('P');
             ylabel('V*');
             hold on;
             
+            end
+            
+            if(strcmp(m.istab,'yes')==1)
             figure(30);
             title('Eigenvalues of matrices AP, AV, A1');
             ylabel('lambdaP, lambdaV, lambda1');
             xlabel('P');
             hold on;
+            end
             
         end % function resetfigs
            

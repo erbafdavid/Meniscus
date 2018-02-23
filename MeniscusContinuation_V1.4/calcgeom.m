@@ -65,7 +65,7 @@ end
     else
      %  i = 1 : axis   
      alpha(1) = 0.;
-    Ka1(1) = 2*atan2(Z(2)-Z(1),R(2)-R(1) )/ds(1); % facteur 2 rajouté 
+    Ka1(1) = 2*atan2(Z(2)-Z(1),R(2)-R(1) )/ds(1); % facteur 2 rajoutï¿½ 
       if (nbdim == 3) 
           Kb1(1) = Ka1(1);
       end
