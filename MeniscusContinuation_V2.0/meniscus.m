@@ -65,7 +65,8 @@ classdef meniscus
         ixi = 0; % set to 1 to use grid reuniformisation using 'calcxi'
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% disp('diag centrale (A)');
+     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     methods
         
@@ -109,6 +110,7 @@ classdef meniscus
                 m.typeend = 'pined';
                 
                 case ('sphere')
+                    % hanging portion of sphere
                 R0 = param(1);
                 m.beta = param(2);
                 m.N = N;
@@ -119,11 +121,28 @@ classdef meniscus
                 m.P = 2/R0;
                 m.typestart = 'axisX';
                 m.typeend = 'angle';
-                m.rhog = -1; % -1 for sessile drop ; +1 for hanging drop
+                m.rhog = -1; % -1 for bubble at ceiling ; +1 for hanging drop
                 m. discretization = 'FE';
                 m.idebug = 100;
                 m.dPdS = -1; % to initiate arclength continuation in decreasing-P direction
-            
+             
+                case ('Sessilesphere')
+                    % hanging portion of sphere
+                R0 = param(1);
+                m.beta = param(2);
+                m.N = N;
+                t = 1:-1/(N-1):0;
+                t = (m.beta)*t;
+                m.R = R0*sin(t);
+                m.Z = -R0*(cos(t(1))-cos(t));
+                m.P = 2/R0;
+                m.typeend = 'axisX';
+                m.typestart = 'angle';%'pined';
+                m.rhog = +1; % -1 for sessile drop ; +1 for hanging drop
+                m. discretization = 'FE';
+                m.beta = pi-m.beta;
+                m.idebug = 100;
+                m.dPdS = -1; % to initiate arclength continuation in decreasing-P direction
                 case default
                 disp(' Meniscus construction : invalid type !');
             end %switch
@@ -182,6 +201,8 @@ classdef meniscus
                     %m.RHS
                     %fin debug sauvage
                     
+                    size(m.AP)
+                    size(m.RHS)
                     
                     m.eta = (m.AP(1:m.N,1:m.N)\m.RHS(1:m.N)')';
                      
@@ -191,8 +212,10 @@ classdef meniscus
                     m.RHS
                     disp('eta :');
                     m.eta
-                    disp('A');
-                    m.AP
+                    disp('3 diag centrales (A)');
+                    [[diag(m.AP,-1);0],diag(m.AP),[0;diag(m.AP,1)]]
+                     disp('valeurs propres(A)');
+                    eig(m.AP)
                     plotmeniscus(m,11,'k:');
                     pause;
                     end
@@ -231,10 +254,12 @@ classdef meniscus
                  if (m.typeend=='angle')
                     ZN = m.Z(N);
                     m.Z = m.Z-ZN;
+                 elseif (m.typestart=='angle')
+                    Z1 = m.Z(1);
+                    m.Z = m.Z-Z1;
                 else
                     ZN = 0;
                 end
-                
                 % correction to ensure equal spacing of gridpoints 
               if(m.ixi==1)  
                
@@ -346,7 +371,7 @@ classdef meniscus
                 m.s0(i) = m.s0(i-1)+m.ds(i-1);
             end
             m.s0(N) = m.s0(N-1)+m.ds(N-1);
-            m.ds(N) = m.ds(N-1); % not used but to avoid possible bugs
+           % m.ds(N) = m.ds(N-1); % not used but to avoid possible bugs
             
             % angle at center of sides (intermediate array)
             for i=1:N-1
@@ -369,8 +394,12 @@ classdef meniscus
                 m.alpha(1) = 2*m.alpha(2)-m.alpha(3);
                 m.Ka(1) = 2*m.Ka(2)-m.Ka(3);
                 m.Kb(1) = 2*m.Kb(2)-m.Kb(3);
+            elseif(m.typestart=='angle')
+                m.alpha(1) =2*m.alpha(2)-m.alpha(3);
+                m.Ka(1) =2*m.Ka(2)-m.Ka(3);
+                m.Kb(1) =2*m.Kb(2)-m.Kb(3);
             else % axis
-                m.alpha(1) = 0.;
+                m.alpha(1) = 0;%0.;
                 m.Ka(1) = 2*atan2(m.Z(2)-m.Z(1),m.R(2)-m.R(1) )/m.ds(1); 
                 if (m.nbdim == 3)
                     m.Kb(1) = m.Ka(1);
@@ -381,6 +410,12 @@ classdef meniscus
                 m.alpha(N) =2*m.alpha(N-1)-m.alpha(N-2);
                 m.Ka(N) =2*m.Ka(N-1)-m.Ka(N-2);
                 m.Kb(N) =2*m.Kb(N-1)-m.Kb(N-2);
+            elseif (m.typeend=='axisX') 
+                m.alpha(N) = pi;
+                m.Ka(N) = 2*atan2(m.Z(N-1)-m.Z(N),m.R(N-1)-m.R(N) )/m.ds(N-1); 
+                if (m.nbdim == 3)
+                    m.Kb(N) = m.Ka(N);
+                end
             else % angle
                 %m.alpha(N) = m.beta; % ne marche pas en elements finis !
                 % on essaie autre chose :S
@@ -445,9 +480,15 @@ classdef meniscus
                         A(1,2) = 2/(ds(1)^2);
                     end
                     A(1,1) = A(1,1)+(Ka(1)^2+Kb(1)^2)+m.rhog;
-                else % for bridge : point 1 is pinned
+                elseif(strcmpi(m.typestart,'pined')==1) % for bridge : point 1 is pinned
                     A(1,1) = -1;
                     A(1,2) = 0;
+                elseif(strcmpi(m.typestart,'angle')==1)
+                    A(1,1) =  1/(2*ds(1));
+                    A(1,2) = -4/(2*ds(1));
+                    A(1,3)   =  3/(2*ds(1)); 
+                 else 
+                    error('Error : typestart not recognized');
                 end
 
                 if (strcmpi(m.typeend,'pined')==1)
@@ -459,7 +500,20 @@ classdef meniscus
                     A(N,N-2) =  1/(2*ds(N-1));
                     A(N,N-1) = -4/(2*ds(N-1));
                     A(N,N)   =  3/(2*ds(N-1));
+                      % case i=1
+                elseif (strcmpi(m.typeend,'axisX')==1) %for bubble/drop : point 1 is on symmetry axis
+                    if (m.nbdim==3)
+                        A(N,N) = -4/(ds(N)^2);  %%% factor 4 because 1/R d eta / ds = d^2 eta / d s^2
+                        A(N,N-1) = 4/(ds(N)^2);
+                    else
+                        A(N,N) = -2/(ds(N)^2);
+                        A(N,N-1) = 2/(ds(N)^2);
+                    end
+                    A(N,N) = A(N,N)+(Ka(N)^2+Kb(N)^2)+m.rhog;
+                else 
+                    error('Error : typeend not recognized');
                 end
+                
                 AA1 = A(1:N,1:N); % for matrix 1, before adding shift for angle-controled case
 
 
@@ -535,22 +589,51 @@ classdef meniscus
                     %    A(N,N-1) = 0; % not even sure it is necessary
                     %end
                end
+               
+               
                % case i=1
-                if  (strcmpi(m.typestart,'axisX')==1) %for bubble/drop : point 1 is on symmetry axis
+                switch(m.typestart)
+                
+                    case('axisX') %for bubble/drop : point 1 is on symmetry axis
                   A(1,1) = -1/ds(1)*(R(2)/2);  %%% facteur 4 car 1/R d eta / ds = d^2 eta / d s^2 (mais en fait 2...) 
                   A(1,2) = A(2,1);
                   A(1,1) = A(1,1)+ (   (Ka(1)^2+Kb(1)^2-dpdz*cos(alpha(1)))*R(1) ...
                                      + (Ka(2)^2+Kb(2)^2-dpdz*cos(alpha(2)))*R(2) )/2 * (ds(1)/3); 
-                else % for bridge : point 1 is pinned
+                    case('pined') % for bridge : point 1 is pinned
                   A(1,1) = 1;
                   A(1,2) = 0;
+                
+                    case('angle')
+                        % a completer et tester
+                    A(1,2) = (R(1)+R(2))/2*1/ds(1);
+                    A(1,1) = - R(1)*(1/ds(1));% A(N,1) = 0;% a verifier 
+                    A(1,2) = A(1,2)  + (  (Ka(1)^2+Kb(1)^2-dpdz*cos(alpha(1)))*R(1) ...
+                                            + (Ka(2)^2+Kb(2)^2-dpdz*cos(alpha(2)))*R(2) )/2 * (ds(1)/6);  
+                    A(1,1) = A(1,1) + (Ka(1)^2+Kb(1)^2- dpdz*cos(alpha(1)))*R(1)*(ds(1))/3;
+                    A(1,3) = 0;
+                    
+                    A(N,1) = 0;
+                    % terme supplementaire traduisant la translation
+                    % verticale pour recoller à la surface
+                    for i=2:N-1
+                    A(i,1) = A(i,1) - dpdz*cos(alpha(1))*R(i)*(ds(i-1)+ds(i))/2;
+                    end; 
+                    A(1,1) = A(1,1) - dpdz*cos(alpha(1))*(R(1)+R(2))/2*(ds(1))/2;
+                    A(N,1) = A(N,1) - dpdz*cos(alpha(1))*(R(N)+R(N-1))/2*(ds(N-1))/2;
                 end
-                if (strcmpi(m.typeend,'pined')==1)
+                
+
+                
+                
+                switch(m.typeend)
+                    
+                    case('pined')
                     % "pinned" case
                     A(N,N) = -1;
                     A(N,N-1) = 0;
                     A(N,N-2) = 0;
-                elseif(strcmpi(m.typeend,'angle')==1)
+                    
+                    case('angle')
                     % cas a traiter différemment  
                     % partie integration par partie idem au cas i
                     
@@ -570,8 +653,17 @@ classdef meniscus
                     end; 
                     A(1,N) = A(1,N) - dpdz*cos(alpha(N))*(R(1)+R(2))/2*(ds(1))/2;
                     A(N,N) = A(N,N) - dpdz*cos(alpha(N))*(R(N)+R(N-1))/2*(ds(N-1))/2;
+                 
+                    case('axisX') %for bubble/drop : point 1 is on symmetry axis
+                  A(N,N) = -1/ds(N-1)*(R(N-1)/2);  %%% facteur 4 car 1/R d eta / ds = d^2 eta / d s^2 (mais en fait 2...) 
+                  A(N,N-1) = A(N-1,N);
+                  A(N,N) = A(N,N)+ (   (Ka(N)^2+Kb(N)^2-dpdz*cos(alpha(N)))*R(N) ...
+                                     + (Ka(N-1)^2+Kb(N-1)^2-dpdz*cos(alpha(N-1)))*R(N-1) )/2 * (ds(N-1)/3); 
                     
                 end
+                
+                
+                
                 m.AP = A;
                 m.AV(1:N,1:N) = A;
                 
@@ -582,13 +674,17 @@ classdef meniscus
                     % (R(i)+R(i-1)/2)*ds(i-1)/2 + (R(i)+R(i+1))/2*ds(i)/2  
                     % a tester... 
                 end;
+                
                 if (strcmpi(m.typestart,'axisX')==1)
                     m.AV(N+1,1) = R(2)/2*ds(1)/2; % test sign
                 end
+                
                 if(strcmpi(m.typeend,'pined')==1)
                        m.AV(N+1,N) = R(N-1)/2*ds(N-1)/2; 
+                elseif (strcmpi(m.typeend,'axisX')==1)
+                    m.AV(N+1,N) = 0*R(N-1)/2*ds(N-1)/2; % test sign
                 else
-                    m.AV(N+1,N) = R(N-1)/2*ds(N-1)/2;
+                    m.AV(N+1,N) = 0*R(N-1)/2*ds(N-1)/2;
                 end
                 m.AV(N+1,N+1) = 0;
 
@@ -596,7 +692,6 @@ classdef meniscus
                 for i=1:N-1
                     m.AV(i,N+1) = m.AV(N+1,i);
                 end
-
 
             end%switch
         
@@ -647,13 +742,22 @@ classdef meniscus
                 if (strcmpi(m.typestart,'pined')==1)
                     m.RHS(1) = 0;
                 end
-
+                if (strcmpi(m.typestart,'angle')==1)
+                    % a verifier
+                    m.RHS(1) =-(m.alpha(1)-m.beta)*(m.R(1));
+                end
+                
+                
+                
                 if (strcmpi(m.typeend,'pined')==1)
                     m.RHS(m.N) = 0;
                 end
                 if (strcmpi(m.typeend,'angle')==1)
                     % a verifier
                     m.RHS(m.N) =-(m.alpha(m.N)-m.beta)*(m.R(m.N));
+                end
+                 if (strcmpi(m.typeend,'axisX')==1)
+                    m.RHS(m.N) =0;
                 end
 
                 % For V continuation : volume constraint (warning in FE
@@ -793,7 +897,7 @@ classdef meniscus
         function plotmeniscus(m,numfig,plotstyle);
             % function to plot the meniscus profile
             figure(numfig);
-            plot(m.R,-m.Z,plotstyle);
+            plot(m.R,m.Z,plotstyle);
             hold on;
             grid on
         end %function plotmeniscus
