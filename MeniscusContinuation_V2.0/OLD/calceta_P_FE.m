@@ -63,7 +63,7 @@ end
 EE = eig(A);
 lambdaminP = EE(abs(EE)==min(abs(EE)));
 lambdamaxP = EE(real(EE)==max(real(EE)));
-lambdaminP =lambdaminP(1);
+lambdaminP = lambdaminP(1);
 lambdamaxP = lambdamaxP(1);
 
 
