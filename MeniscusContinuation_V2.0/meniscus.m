@@ -576,17 +576,17 @@ classdef meniscus
                     
                 for i=2:N-1
                     % d^2 eta / d^2 s0
-                    A(i,i-1) = 2*ds(i)/(ds(i)*ds(i-1)*(ds(i)+ds(i-1)));
-                    A(i,i) = -2/(ds(i)*ds(i-1));
-                    A(i,i+1) = 2*ds(i-1)/(m.ds(i)*ds(i-1)*(ds(i)+ds(i-1)));
+                    A(i,i-1) = m.gamma*(2*ds(i)/(ds(i)*ds(i-1)*(ds(i)+ds(i-1))));
+                    A(i,i) = m.gamma*(-2/(ds(i)*ds(i-1)));
+                    A(i,i+1) = m.gamma*(2*ds(i-1)/(m.ds(i)*ds(i-1)*(ds(i)+ds(i-1))));
                     % T0r/r* d eta / d s0
                     if (m.nbdim==3)
-                        A(i,i-1) = A(i,i-1) -ds(i)^2/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i);
-                        A(i,i) = A(i,i) +  (ds(i)^2-ds(i-1)^2)/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i);
-                        A(i,i+1) = A(i,i+1) +ds(i-1)^2/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i);
+                        A(i,i-1) = A(i,i-1) + m.gamma*(-ds(i)^2/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i));
+                        A(i,i) = A(i,i) +  m.gamma*((ds(i)^2-ds(i-1)^2)/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i));
+                        A(i,i+1) = A(i,i+1) +m.gamma*(ds(i-1)^2/((ds(i)+ds(i-1))*ds(i)*ds(i-1))*cos(alpha(i))/R(i));
                     end
                     %  (Ka^2 + Kb^2) eta
-                    A(i,i) = A(i,i) + 1*(Ka(i)^2+Kb(i)^2);
+                    A(i,i) = A(i,i) + m.gamma*(Ka(i)^2+Kb(i)^2);
                     % + N0z*eta*rhog%
                     A(i,i) = A(i,i) + m.rhog*cos(alpha(i));
                 end;
@@ -595,13 +595,13 @@ classdef meniscus
                 switch(m.typestart)
                     case('axisX') 
                     if (m.nbdim==3)
-                        A(1,1) = -4/(ds(1)^2);  %%% factor 4 because 1/R d eta / ds = d^2 eta / d s^2
-                        A(1,2) = 4/(ds(1)^2);
+                        A(1,1) = m.gamma*(-4/(ds(1)^2));  %%% factor 4 because 1/R d eta / ds = d^2 eta / d s^2
+                        A(1,2) = m.gamma*(4/(ds(1)^2));
                     else
-                        A(1,1) = -2/(ds(1)^2);
-                        A(1,2) = 2/(ds(1)^2);
+                        A(1,1) = m.gamma*(-2/(ds(1)^2));
+                        A(1,2) = m.gamma*(2/(ds(1)^2));
                     end
-                    A(1,1) = A(1,1)+(Ka(1)^2+Kb(1)^2)+m.rhog*cos(alpha(1));
+                    A(1,1) = A(1,1)+m.gamma*(Ka(1)^2+Kb(1)^2)+m.rhog*cos(alpha(1));
                     case('pined') 
                     A(1,1) = -1;
                     A(1,2) = 0;
@@ -624,13 +624,13 @@ classdef meniscus
                     A(N,N)   =  3/(2*ds(N-1));
                     case('axisX') %for bubble/drop : point 1 is on symmetry axis
                     if (m.nbdim==3)
-                        A(N,N) = -4/(ds(N-1)^2);  %%% factor 4 because 1/R d eta / ds = d^2 eta / d s^2
-                        A(N,N-1) = 4/(ds(N-1)^2);
+                        A(N,N) = m.gamma*(-4/(ds(N-1)^2));  %%% factor 4 because 1/R d eta / ds = d^2 eta / d s^2
+                        A(N,N-1) = m.gamma*(4/(ds(N-1)^2));
                     else
-                        A(N,N) = -2/(ds(N-1)^2);
-                        A(N,N-1) = 2/(ds(N-1)^2);
+                        A(N,N) =m.gamma*( -2/(ds(N-1)^2));
+                        A(N,N-1) = m.gamma*(2/(ds(N-1)^2));
                     end
-                    A(N,m.N) = A(N,N)+(Ka(N)^2+Kb(N)^2)+m.rhog*cos(alpha(N));
+                    A(N,m.N) = A(N,N)+m.gamma*(Ka(N)^2+Kb(N)^2)+m.rhog*cos(alpha(N));
                 end
                 
                 AA1 = A(1:N,1:N); % for matrix 1, before adding shift for angle-controled case
@@ -719,7 +719,7 @@ classdef meniscus
                     A(i,i+1) = A(i,i+1) + (10*KKi*ri+5*KKi*dpri+5*dpKKi*ri+3*dpKKi*dpri)*ds(i)/60;
                end
                
-               A(1,1) = m.gamma*(-1/ds(1)*(R(1)+R(2))/2);
+               %A(1,1) = m.gamma*(-1/ds(1)*(R(1)+R(2))/2);
                KKi = m.gamma*(Ka(1)^2+Kb(1)^2)-dpdz*cos(alpha(1));  
                dpKKi =  m.gamma*(Ka(2)^2+Kb(2)^2)-dpdz*cos(alpha(2))-KKi;
                ri = R(1) ; dpri = R(2)-ri; 
@@ -756,11 +756,11 @@ classdef meniscus
                     A(N,1) =        - dpdz*cos(alpha(1))*(  (R(N)/2+(R(N-1)-R(N))/6)*ds(N-1));
                 end
                 
-               A(N,N) = m.gamma*(-1/ds(N-1)*(R(N)+R(N-1))/2);
+               %A(N,N) = m.gamma*(-1/ds(N-1)*(R(N)+R(N-1))/2);
                KKi = m.gamma*(Ka(N)^2+Kb(N)^2)-dpdz*cos(alpha(N));  
                dmKKi =  m.gamma*(Ka(N-1)^2+Kb(N-1)^2)-dpdz*cos(alpha(N-1))-KKi;
                ri = R(N) ; dmri = R(N-1)-ri; 
-               A(N,N) = A(N,N) + (20*KKi*ri+5*KKi*dmri+5*dmKKi*ri+2*dmKKi*dmri)*ds(1)/60;
+               A(N,N) =  (20*KKi*ri+5*KKi*dmri+5*dmKKi*ri+2*dmKKi*dmri)*ds(1)/60;
                A(N,N-1) = A(N-1,N);
                 
                 
@@ -915,7 +915,7 @@ classdef meniscus
                     m.RHS(1) = 0;
                     case('angle')
                     % a verifier
-                    m.RHS(1) =m.RHS(1)+(m.alpha(1)-m.beta)*(m.R(1));
+                    m.RHS(1) =m.RHS(1)+m.gamma*(m.alpha(1)-m.beta)*(m.R(1));
                 end
                 
                 
@@ -925,7 +925,7 @@ classdef meniscus
                     m.RHS(m.N) = 0;
                     case('angle')
                     % a verifier
-                    m.RHS(m.N) = m.RHS(m.N) -(m.alpha(m.N)-m.beta)*(m.R(m.N));
+                    m.RHS(m.N) = m.RHS(m.N) -m.gamma*(m.alpha(m.N)-m.beta)*(m.R(m.N));
                     case('axisX')
 %                    m.RHS(m.N) =0;
                 end
@@ -1139,7 +1139,7 @@ classdef meniscus
             title('Menisci shapes');
             xlabel('R');
             ylabel('Z');
-            axis equal;
+%            axis equal;
             hold on;
          end
             
