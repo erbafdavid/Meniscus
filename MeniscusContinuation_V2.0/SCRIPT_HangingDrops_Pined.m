@@ -5,5 +5,8 @@
 close all;
 m = meniscus('flatinv',100,1);
 m.istab = 'yes'; % to detect the bifurcation points and indicate them on fig. 10
+m.whichfigures= [1:100];
+m.idebug = 100;
+resetfigs(m);
 
-m = m.loop('dS',.02,200);
+m = m.loop('dS',.02,600);
