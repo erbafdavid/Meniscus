@@ -207,7 +207,7 @@ classdef meniscus
                 error(' Meniscus construction : invalid type !');
             end %switch
             
-            m.resetfigs; % to set the axes and legends for the plots
+%            m.resetfigs; % to set the axes and legends for the plots
             m = calcgeom(m); 
             plotmeniscus(m,10,'k:');
             
@@ -412,6 +412,7 @@ classdef meniscus
             Vtab = [m.V];
             Ptab = [m.P];
             thetatab = [m.beta];
+            radiustab = [max(m.R(1),m.R(end))];
             plotmeniscus(m,10,'k');
             itloop = 0;
             
@@ -437,6 +438,7 @@ classdef meniscus
                     Vtab = [Vtab m.V];
                     Ptab = [Ptab m.P];
                     thetatab = [thetatab m.beta];
+                    radiustab = [radiustab max(m.R(1),m.R(end))];
                 end
             end
             
@@ -459,6 +461,12 @@ classdef meniscus
             figure(121);
             hold on;
             plot(Vtab,thetatab,'k');
+            end
+            
+            if(ismember(122,m.whichfigures)||m.idebug>49)
+            figure(122);
+            hold on;
+            plot(Vtab,radiustab,'k');
             end
             
             m.conv=1;
@@ -1265,6 +1273,13 @@ classdef meniscus
             hold on;
          end
        
+          if(ismember(122,m.whichfigures)||m.idebug>49)
+            figure(122);
+            title('Volume vs. radius (for droplet with imposed angle)');
+            ylabel('Volume');
+            xlabel('Radius');
+            hold on;
+         end
   
             
         end % function resetfigs

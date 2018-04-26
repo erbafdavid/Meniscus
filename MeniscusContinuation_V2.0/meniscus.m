@@ -13,8 +13,8 @@ classdef meniscus
     properties
         %%%% physical properties
         nbdim = 3
-        rhog = 1  % set to 1 to work in nondimensional units
-        gamma = 1 % idem
+        rhog = 1  % positive for drop (heavier fluid INSIDE); negative for bubble (heavier fluid OUTSIDE) 
+        gamma = 1 
         typestart = 'axisX' % possible types : 'axisX', 'pined' 
         typeend = 'pined'   % possible types : 'pined', 'angle'
         beta = 0            % contact angle, OLD VERSION 
@@ -134,7 +134,7 @@ classdef meniscus
                     error('WARNING : value of angle seems very small... is that the right value in DEGREES ????');
                 end
                 thetas = param(2)*pi/180; % static contact angle (converted to radians)
-                R0 = param(1)/sin(thetas); % this is the radius AT THE CONTACT LINE 
+                R0 = param(1)/sin(thetas); % param(1) is the radius OF THE CONTACT LINE ; R0 is the radius OF CURVATURE
                 m.typeend = 'axisX';
                 m.typestart = 'angle';%'pined';
                 m.alphastart = pi-thetas;
@@ -154,7 +154,7 @@ classdef meniscus
                     error('WARNING : value of angle seems very small... is that the right value in DEGREES ????');
                 end
                 thetas = param(2)*pi/180; % static contact angle (converted to radians)
-                 R0 = param(1)/sin(thetas); % this is the radius AT THE CONTACT LINE
+                R0 = param(1)/sin(thetas); % param(1) is the radius OF THE CONTACT LINE ; R0 is the radius OF CURVATURE
                 m.typestart = 'axisX';
                 m.typeend = 'angle';
                 m.alphaend = thetas;
