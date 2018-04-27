@@ -14,6 +14,7 @@
 clear all; close all;
 Rhole = 1;
 m = meniscus('flatinv',100,Rhole); % initialize the meniscus with a "flat" shape
+m.whichfigures = [m.whichfigures 121]% to plot thetas as function of V in figure 122
 m.resetfigs; % set the figures axes and legends
 m.istab = 'yes'; % to detect the bifurcation points and indicate them on fig. 10
 m.discretization = 'FD'; % Finite differences (default) ; Finite elements currently works only if m.istab='no'

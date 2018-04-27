@@ -11,6 +11,7 @@ clear all; close all;
 beta = 60; % angle in degrees
 Rinit = .4; 
 m = meniscus('capinv',200,[Rinit,beta]); % initialize the meniscus
+m.whichfigures = [m.whichfigures 122];
 m.resetfigs; % set the figures axes and legends
 %m.istab = 'yes';
 m.discretization = 'FD'; % Finite differences (default) ; Finite elements currently works only if m.istab='no'

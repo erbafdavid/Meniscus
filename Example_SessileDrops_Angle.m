@@ -27,8 +27,7 @@ m.whichfigures = [m.whichfigures 122];
 m.resetfigs; % set the figures axes and legends
 m = m.step('dV',0); % firt computation
 
-
-% first arclencght-continuation loop with coarse step
+%first arclencght-continuation loop with coarse step
 %m = m.loop('dS',.05,200);
 
 m = m.loop('dV',0.05,10);
@@ -36,6 +35,7 @@ m = m.loop('dV',0.05,10);
 m = m.loop('dV',0.05,15);
 m = m.loop('dV',0.05,15);
 m = m.loop('dV',0.05,20);
+
 
 
 beta = 78.5; 
@@ -48,7 +48,7 @@ m.discretization = 'FD'; % Finite differences (default) ; Finite elements curren
 m.whichfigures = [m.whichfigures 122];
 m = m.step('dV',0); % firt computation
 
-% first arclencght-continuation loop with coarse step
+%first arclencght-continuation loop with coarse step
 %m = m.loop('dS',.05,200);
 
 m = m.loop('dV',0.05,70);
@@ -64,11 +64,10 @@ m.discretization = 'FD'; % Finite differences (default) ; Finite elements curren
 m.whichfigures = [m.whichfigures 122];
 m = m.step('dV',0); % firt computation
 
-% first arclencght-continuation loop with coarse step
+%first arclencght-continuation loop with coarse step
 %m = m.loop('dS',.05,200);
 
 m = m.loop('dV',0.05,70);
-
 
 
 

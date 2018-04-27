@@ -17,7 +17,7 @@ classdef meniscus
         gamma = 1 % idem
         typestart = 'axisX' % possible types : 'axisX', 'pined' 
         typeend = 'pined'   % possible types : 'pined', 'angle'
-        beta = 0            % contact angle, OLD VERSION 
+        thetas              % contact angle
         alphastart          % if typestart = 'angle', this will be the imposed value of the angle; in other cases this parameter is not used.
         alphaend            % same thing if typeend = 'angle'
         Vref=3             % reference volume, for nondimensionalization and arclength;
@@ -133,19 +133,18 @@ classdef meniscus
                 if(param(2)<=pi)
                     error('WARNING : value of angle seems very small... is that the right value in DEGREES ????');
                 end
-                thetas = param(2)*pi/180; % static contact angle (converted to radians)
-                R0 = param(1)/sin(thetas); % this is the radius AT THE CONTACT LINE 
+                m.thetas = param(2)*pi/180; % static contact angle (converted to radians)
+                R0 = param(1)/sin(m.thetas); % param(1) is the radius AT THE CONTACT LINE ; R0 is the radius OF THE SPHERE 
                 m.typeend = 'axisX';
                 m.typestart = 'angle';%'pined';
-                m.alphastart = pi-thetas;
+                m.alphastart = pi-m.thetas;
                 t = 1:-1/(N-1):0;
-                t = thetas*t;
+                t = m.thetas*t;
                 m.R = R0*sin(t);
-                m.Z = -R0*(cos(thetas)-cos(t));                
+                m.Z = -R0*(cos(m.thetas)-cos(t));                
                 m.P = 2*m.gamma/R0; % initial pressure if gravity is negliged
                 m.rhog = +1; % 
                 m. discretization = 'FE';
-                m.beta = pi-thetas;
                 m.dPdS = 1; % to initiate arclength continuation in increasing-P direction
 
                 case ('capinv') % spherical cap hanging from a plate
@@ -153,55 +152,55 @@ classdef meniscus
                  if(param(2)<=pi)
                     error('WARNING : value of angle seems very small... is that the right value in DEGREES ????');
                 end
-                thetas = param(2)*pi/180; % static contact angle (converted to radians)
-                 R0 = param(1)/sin(thetas); % this is the radius AT THE CONTACT LINE
+                m.thetas = param(2)*pi/180; % static contact angle (converted to radians)
+                R0 = param(1)/sin(m.thetas); % param(1) is the radius AT THE CONTACT LINE ; R0 is the radius OF THE SPHERE
                 m.typestart = 'axisX';
                 m.typeend = 'angle';
-                m.alphaend = thetas;
+                m.alphaend = m.thetas;
                 t = 0:1/(N-1):1;
-                t = thetas*t;
+                t = m.thetas*t;
                 m.R = R0*sin(t);
-                m.Z = R0*(cos(thetas)-cos(t));                
+                m.Z = R0*(cos(m.thetas)-cos(t));                
                 m.P = 2*m.gamma/R0; % initial pressure if gravity is negliged
                 m.rhog = +1; % 
                 m. discretization = 'FE';
-                m.beta = thetas;
                 m.dPdS = -1; % to initiate arclength continuation in decreasing-P direction
     
                 
-                case ('sphere') % previous method for constructing a hanging portion of sphere
-                R0 = param(1);
-                m.beta = param(2);
-                R0 = R0/sin(m.beta); % R0 is the initial radius 
-                m.N = N;
-                t = 0:1/(N-1):1;
-                t = (m.beta)*t;
-                m.R = R0*sin(t);
-                m.Z = R0*(cos(t(N))-cos(t));
-                m.P = 2/R0;
-                m.typestart = 'axisX';
-                m.typeend = 'angle';
-                m.rhog = -1; % -1 for bubble at ceiling ; +1 for hanging drop
-                m. discretization = 'FE';
-                m.idebug = 100;
-                m.dPdS = -1; % to initiate arclength continuation in decreasing-P direction
-             
-                case ('Sessilesphere') % previous method for constructing a sessile portion of sphere
-                R0 = param(1);
-                m.beta = param(2);
-                m.N = N;
-                t = 1:-1/(N-1):0;
-                t = (m.beta)*t;
-                m.R = R0*sin(t);
-                m.Z = -R0*(cos(t(1))-cos(t));
-                m.P = 2/R0;
-                m.typeend = 'axisX';
-                m.typestart = 'angle';%'pined';
-                m.rhog = +1; % -1 for sessile drop ; +1 for hanging drop
-                m. discretization = 'FE';
-                m.beta = pi-m.beta;
-                m.idebug = 100;
-                m.dPdS = -1; % to initiate arclength continuation in decreasing-P direction
+%                 case ('sphere') % previous method for constructing a hanging portion of sphere
+%                 R0 = param(1);
+%                 m.thetas = param(2)*pi/180;
+%                 m.alphaend = thetas;
+%                 R0 = R0/sin(m.beta); % R0 is the initial radius 
+%                 m.N = N;
+%                 t = 0:1/(N-1):1;
+%                 t = (m.beta)*t;
+%                 m.R = R0*sin(t);
+%                 m.Z = R0*(cos(t(N))-cos(t));
+%                 m.P = 2/R0;
+%                 m.typestart = 'axisX';
+%                 m.typeend = 'angle';
+%                 m.rhog = -1; % -1 for bubble at ceiling ; +1 for hanging drop
+%                 m. discretization = 'FE';
+%                 m.idebug = 100;
+%                 m.dPdS = -1; % to initiate arclength continuation in decreasing-P direction
+%              
+%                 case ('Sessilesphere') % previous method for constructing a sessile portion of sphere
+%                 R0 = param(1);
+%                 m.beta = param(2);
+%                 m.N = N;
+%                 t = 1:-1/(N-1):0;
+%                 t = (m.beta)*t;
+%                 m.R = R0*sin(t);
+%                 m.Z = -R0*(cos(t(1))-cos(t));
+%                 m.P = 2/R0;
+%                 m.typeend = 'axisX';
+%                 m.typestart = 'angle';%'pined';
+%                 m.rhog = +1; % -1 for sessile drop ; +1 for hanging drop
+%                 m. discretization = 'FE';
+%                 m.beta = pi-m.beta;
+%                 m.idebug = 100;
+%                 m.dPdS = -1; % to initiate arclength continuation in decreasing-P direction
             
                 case default
                 error(' Meniscus construction : invalid type !');
@@ -274,7 +273,7 @@ classdef meniscus
             end %switch 
 
             
-            while ((RES > epsilon)&&(it<itmax)&&(RES<100))
+            while ((RES > epsilon)&&(it<itmax)&&(RES<1000))
                 % Newton iteration 
                 
                 m = calcgeom(m);
@@ -289,19 +288,22 @@ classdef meniscus
                     m = calcRHS(m);
                     m.eta = (m.AP(1:m.N,1:m.N)\m.RHS(1:m.N)')';                  
                     dP = 0;
-                    RES = max(abs(m.RHS(1:m.N)))/max(m.gamma*max(m.R)+abs(m.rhog)*max(abs(m.Z))); 
+                    RES = max(abs(m.RHS(1:m.N))); 
+                    % RES = max(abs(m.RHS(1:m.N)))/max(m.gamma*max(m.R)+abs(m.rhog)*max(abs(m.Z))); 
                 case('V')
                     m = calcRHS(m);
                     etaXX = (m.AV(1:m.N+1,1:m.N+1)\m.RHS(1:m.N+1)')';
                     m.eta = etaXX(1:m.N);
                     dP = etaXX(m.N+1);
-                    RES = max(abs(m.RHS(1:m.N+1)))/max(m.gamma*max(m.R)+abs(m.rhog)*max(abs(m.Z)));  
+                    RES = max(abs(m.RHS(1:m.N+1)));
+                    %RES = max(abs(m.RHS(1:m.N+1)))/max(m.gamma*max(m.R)+abs(m.rhog)*max(abs(m.Z)));  
                 case('S')
                     m = calcRHS(m);
                     etaXX = (m.AS(1:m.N+1,1:m.N+1)\m.RHS(1:m.N+1)')';
                     m.eta = etaXX(1:m.N);
                     dP = etaXX(m.N+1);
-                    RES = max(abs(m.RHS(1:m.N+1)))/max(m.gamma*max(m.R)+abs(m.rhog)*max(abs(m.Z)));
+                    RES = max(abs(m.RHS(1:m.N+1)));
+                    %RES = max(abs(m.RHS(1:m.N+1)))/max(m.gamma*max(m.R)+abs(m.rhog)*max(abs(m.Z)));
                 end%switch
 
                 if(m.idebug>=10) 
@@ -356,13 +358,19 @@ classdef meniscus
                 m.conv = it;
                
                 if(strcmp(m.typestart,'pined')==1)
-                    m.beta = pi-m.alpha(1);
+                    m.thetas = pi-m.alpha(1);
                 end
                 if(strcmp(m.typeend,'pined')==1)
-                    m.beta = m.alpha(end);
+                    m.thetas = m.alpha(end);
                 end
+                %if(strcmp(m.typestart,'angle')==1)
+                %    thetas = pi-m.beta;
+                %end
+                %if(strcmp(m.typeend,'angle')==1)
+                %    thetas = m.beta;
+                %end
                  if (m.verbosity > 0)
-                    fprintf(' New converged meniscus shape for (P,V,theta) = ( %g , %g , %g); it = %i \n',m.P,m.V,m.beta*180/pi,it);
+                    fprintf(' New converged meniscus shape for (P,V,theta) = ( %g , %g , %g); it = %i \n',m.P,m.V,m.thetas*180/pi,it);
                 end
                 
                 
@@ -411,7 +419,7 @@ classdef meniscus
             m = step(m,type,0);
             Vtab = [m.V];
             Ptab = [m.P];
-            thetatab = [m.beta];
+            thetatab = [m.thetas];
             radiustab = [max(m.R(1),m.R(end))];
             plotmeniscus(m,10,'k');
             itloop = 0;
@@ -430,21 +438,21 @@ classdef meniscus
             
             while (itloop<Nstep && m.conv>0)
                 m = step(m,type,dX);    
-                if(strcmp(m.istab,'yes')==1)
+                if(strcmp(m.istab,'yes')==1&&m.conv>0)
                     m = stab(m);
                 end 
                 itloop = itloop+1;
-                if(m.conv>1)
+                if(m.conv>0)
                     Vtab = [Vtab m.V];
                     Ptab = [Ptab m.P];
-                    thetatab = [thetatab m.beta];
+                    thetatab = [thetatab m.thetas];
                     radiustab = [radiustab max(m.R(1),m.R(end))];
                 end
             end
-            
-            if (m.verbosity > 0 && m.conv>1)
+            if (m.verbosity > 0 && m.conv>0)
                     disp([' Loop correctly completed']) ;
             end 
+           
             
             if(ismember(20,m.whichfigures)||m.idebug>49)
             figure(20);
@@ -460,13 +468,13 @@ classdef meniscus
             if(ismember(121,m.whichfigures)||m.idebug>49)
             figure(121);
             hold on;
-            plot(Vtab,thetatab,'k');
+            plot(Vtab,180/pi*thetatab,'k');
             end
             
             if(ismember(122,m.whichfigures)||m.idebug>49)
             figure(122);
             hold on;
-            plot(Vtab,radiustab,'k');
+            plot(radiustab,Vtab,'k');
             end
             
             m.conv=1;
@@ -913,7 +921,7 @@ classdef meniscus
                     case('pined')
                     m.RHS(1) = 0;
                     case('angle')
-                    m.RHS(1)   =  (m.alpha(1)-m.beta); % a verifier
+                    m.RHS(1)   =  (m.alpha(1)-m.alphastart); % a verifier
                 end
 
                 switch(m.typeend)
@@ -922,7 +930,7 @@ classdef meniscus
                     case('pined')
                     m.RHS(m.N) = 0;
                     case('angle')
-                    m.RHS(m.N)   =  (m.alpha(m.N)-m.beta);
+                    m.RHS(m.N)   =  (m.alpha(m.N)-m.alphaend);
                 end
 
                 % For V continuation : volume constraint
@@ -965,7 +973,7 @@ classdef meniscus
                     m.RHS(1) = 0;
                     case('angle')
                     % a verifier
-                    m.RHS(1) =m.RHS(1)+m.gamma*(m.alpha(1)-m.beta)*(m.R(1));
+                    m.RHS(1) =m.RHS(1)+m.gamma*(m.alpha(1)-m.alphastart)*(m.R(1));
                 end
                 
                 
@@ -975,7 +983,7 @@ classdef meniscus
                     m.RHS(m.N) = 0;
                     case('angle')
                     % a verifier
-                    m.RHS(m.N) = m.RHS(m.N) -m.gamma*(m.alpha(m.N)-m.beta)*(m.R(m.N));
+                    m.RHS(m.N) = m.RHS(m.N) -m.gamma*(m.alpha(m.N)-m.alphaend)*(m.R(m.N));
                     case('axisX')
 %                    m.RHS(m.N) =0;
                 end
