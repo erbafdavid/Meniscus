@@ -62,7 +62,7 @@ the "basic" outputs are :
             "start/end/stability change" in "loop" mode) 
    - figure 20 : representation of the menisci characteristic in a P-V diagram 
                     (the program will plots points in "step" mode and curves in "loop" mode). 
-   A number of other possibilities are hidden in the program... for instance figure 121 will plot V as function of R.
+   A number of other possibilities are hidden in the program... for instance figure 121 will plot thetas as function of V.
    To add a new plot simply add the corresponding number to m.whichfigures 
    (for instance    m.whichfigures = [m.whichfigures 121]  to add figure 121 as described).
 
