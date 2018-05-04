@@ -1170,6 +1170,7 @@ classdef meniscus
             end
             m = step(m,'P',0);
         end % function flip
+
  
 
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1181,6 +1182,7 @@ classdef meniscus
            dlmwrite(file,m.R,'delimiter', '\n','-append');
            dlmwrite(file,m.Z,'delimiter', '\n','-append');
         end % function flip
+
         
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
@@ -1305,4 +1307,6 @@ classdef meniscus
            
     end % methods
 
+
 end % class meniscus 
+
