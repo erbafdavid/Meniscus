@@ -1170,6 +1170,19 @@ classdef meniscus
             end
             m = step(m,'P',0);
         end % function flip
+
+ 
+
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+         function m = export(m,file);
+            % to export the geometry in a file for freefem
+            m.N
+           dlmwrite(file,m.N,'delimiter', '\n');
+           dlmwrite(file,m.R,'delimiter', '\n','-append');
+           dlmwrite(file,m.Z,'delimiter', '\n','-append');
+        end % function flip
+
         
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
@@ -1294,4 +1307,6 @@ classdef meniscus
            
     end % methods
 
+
 end % class meniscus 
+
